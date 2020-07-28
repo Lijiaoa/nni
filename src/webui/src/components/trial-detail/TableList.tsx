@@ -2,8 +2,19 @@ import * as React from 'react';
 import axios from 'axios';
 import ReactEcharts from 'echarts-for-react';
 import {
-    Stack, Dropdown, DetailsList, IDetailsListProps, DetailsListLayoutMode,
-    PrimaryButton, Modal, IDropdownOption, IColumn, Selection, SelectionMode, IconButton, TooltipHost
+    Stack,
+    Dropdown,
+    DetailsList,
+    IDetailsListProps,
+    DetailsListLayoutMode,
+    PrimaryButton,
+    Modal,
+    IDropdownOption,
+    IColumn,
+    Selection,
+    SelectionMode,
+    IconButton,
+    TooltipHost,
 } from 'office-ui-fabric-react';
 import { LineChart, blocked, copy } from '../Buttons/Icon';
 import { MANAGER_IP, COLUMNPro } from '../../static/const';
@@ -28,7 +39,7 @@ require('echarts/lib/chart/line');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
 echarts.registerTheme('my_theme', {
-    color: '#3c8dbc'
+    color: '#3c8dbc',
 });
 
 interface TableListProps {
@@ -69,7 +80,6 @@ interface TableListState {
 }
 
 class TableList extends React.Component<TableListProps, TableListState> {
-
     public intervalTrialLog = 10;
     public trialId!: string;
 
@@ -97,7 +107,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
             tableColumns: this.initTableColumnList(this.props.columnList),
             allColumnList: this.getAllColumnKeys(),
             tableSourceForSort: this.props.tableSource,
-            sortMessage: { field: '', isDescend: false }
+            sortMessage: { field: '', isDescend: false },
         };
     }
 
@@ -121,14 +131,13 @@ class TableList extends React.Component<TableListProps, TableListState> {
         this.setState({
             tableColumns: newColumns,
             tableSourceForSort: newItems,
-            sortMessage: { field: getColumn.key, isDescend: currColumn.isSortedDescending }
+            sortMessage: { field: getColumn.key, isDescend: currColumn.isSortedDescending },
         });
-
     };
 
     private copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): any {
         const key = columnKey as keyof T;
-        return items.slice(0).sort(function (a: T, b: T): any {
+        return items.slice(0).sort(function(a: T, b: T): any {
             if (a[key] === undefined) {
                 return 1;
             }
@@ -149,9 +158,11 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'number',
         onColumnClick: this.onColumnClick,
-        onRender: (item): React.ReactNode => <TooltipHost content={item.formattedLatestAccuracy}>
-            <div className="ellipsis">{item.formattedLatestAccuracy}</div>
-        </TooltipHost>
+        onRender: (item): React.ReactNode => (
+            <TooltipHost content={item.formattedLatestAccuracy}>
+                <div className='ellipsis'>{item.formattedLatestAccuracy}</div>
+            </TooltipHost>
+        ),
     };
 
     SequenceIdColumnConfig: any = {
@@ -174,9 +185,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'string',
         onColumnClick: this.onColumnClick,
-        className: 'tableHead leftTitle'
+        className: 'tableHead leftTitle',
     };
-
 
     StartTimeColumnConfig: any = {
         name: 'Start Time',
@@ -187,9 +197,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'number',
         onColumnClick: this.onColumnClick,
-        onRender: (record): React.ReactNode => (
-            <span>{formatTimestamp(record.startTime)}</span>
-        )
+        onRender: (record): React.ReactNode => <span>{formatTimestamp(record.startTime)}</span>,
     };
 
     EndTimeColumnConfig: any = {
@@ -201,9 +209,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'number',
         onColumnClick: this.onColumnClick,
-        onRender: (record): React.ReactNode => (
-            <span>{formatTimestamp(record.endTime, '--')}</span>
-        )
+        onRender: (record): React.ReactNode => <span>{formatTimestamp(record.endTime, '--')}</span>,
     };
 
     DurationColumnConfig: any = {
@@ -215,9 +221,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'number',
         onColumnClick: this.onColumnClick,
-        onRender: (record): React.ReactNode => (
-            <span className="durationsty">{convertDuration(record.duration)}</span>
-        )
+        onRender: (record): React.ReactNode => <span className='durationsty'>{convertDuration(record.duration)}</span>,
     };
 
     StatusColumnConfig: any = {
@@ -230,9 +234,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'string',
         onColumnClick: this.onColumnClick,
-        onRender: (record): React.ReactNode => (
-            <span className={`${record.status} commonStyle`}>{record.status}</span>
-        ),
+        onRender: (record): React.ReactNode => <span className={`${record.status} commonStyle`}>{record.status}</span>,
     };
 
     IntermediateCountColumnConfig: any = {
@@ -244,9 +246,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         isResizable: true,
         data: 'number',
         onColumnClick: this.onColumnClick,
-        onRender: (record): React.ReactNode => (
-            <span>{`#${record.intermediateCount}`}</span>
-        )
+        onRender: (record): React.ReactNode => <span>{`#${record.intermediateCount}`}</span>,
     };
 
     showIntermediateModal = async (record: TrialJobInfo, event: React.SyntheticEvent<EventTarget>): Promise<void> => {
@@ -276,7 +276,6 @@ class TableList extends React.Component<TableListProps, TableListState> {
             }
             // intermediateArr just store default val
             metricDatas.map(item => {
-
                 if (item.type === 'PERIODICAL') {
                     const temp = parseMetrics(item.data);
                     if (typeof temp === 'object') {
@@ -291,11 +290,11 @@ class TableList extends React.Component<TableListProps, TableListState> {
                 intermediateData: res.data, // store origin intermediate data for a trial
                 intermediateOption: intermediate,
                 intermediateOtherKeys: otherkeys,
-                intermediateId: record.id
+                intermediateId: record.id,
             });
         }
         this.setState({ modalVisible: true });
-    }
+    };
 
     // intermediate button click -> intermediate graph for each trial
     // support intermediate is dict
@@ -329,48 +328,46 @@ class TableList extends React.Component<TableListProps, TableListState> {
             // re-render
             this.setState({
                 intermediateKey: value,
-                intermediateOption: intermediate
+                intermediateOption: intermediate,
             });
         }
-    }
+    };
 
     hideIntermediateModal = (): void => {
         this.setState({
-            modalVisible: false
+            modalVisible: false,
         });
-    }
+    };
 
     hideShowColumnModal = (): void => {
-
         this.setState(() => ({ isShowColumn: false }));
-    }
+    };
 
     // click add column btn, just show the modal of addcolumn
     addColumn = (): void => {
         // show user select check button
         this.setState(() => ({ isShowColumn: true }));
-    }
+    };
 
     fillSelectedRowsTostate = (selected: number[] | string[], selectedRows: Array<TableRecord>): void => {
         this.setState({ selectRows: selectedRows, selectedRowKeys: selected });
-    }
+    };
 
     // open Compare-modal
     compareBtn = (): void => {
-
         const { selectRows } = this.state;
         if (selectRows.length === 0) {
             alert('Please select datas you want to compare!');
         } else {
             this.setState({ isShowCompareModal: true });
         }
-    }
+    };
 
     // close Compare-modal
     hideCompareModal = (): void => {
         // close modal. clear select rows data, clear selected track
         this.setState({ isShowCompareModal: false, selectedRowKeys: [], selectRows: [] });
-    }
+    };
 
     // open customized trial modal
     private setCustomizedTrial = (trialId: string, event: React.SyntheticEvent<EventTarget>): void => {
@@ -378,23 +375,23 @@ class TableList extends React.Component<TableListProps, TableListState> {
         event.stopPropagation();
         this.setState({
             isShowCustomizedModal: true,
-            copyTrialId: trialId
+            copyTrialId: trialId,
         });
-    }
+    };
 
     private closeCustomizedTrial = (): void => {
         this.setState({
             isShowCustomizedModal: false,
-            copyTrialId: ''
+            copyTrialId: '',
         });
-    }
+    };
 
     private onWindowResize = (): void => {
         this.setState(() => ({
             modalIntermediateHeight: window.innerHeight,
-            modalIntermediateWidth: window.innerWidth
+            modalIntermediateWidth: window.innerWidth,
         }));
-    }
+    };
 
     private onRenderRow: IDetailsListProps['onRenderRow'] = props => {
         if (props) {
@@ -406,7 +403,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
     private getSelectedRows = new Selection({
         onSelectionChanged: (): void => {
             this.setState(() => ({ selectRows: this.getSelectedRows.getSelection() }));
-        }
+        },
     });
 
     // trial parameters & dict final keys & Trial No. Id ...
@@ -426,8 +423,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
         }
         // concat trial all final keys and remove dup "default" val, return list
         const finalKeysList = TRIALS.finalKeys().filter(item => item !== 'default');
-        return (COLUMNPro.concat(parameterStr)).concat(finalKeysList);
-    }
+        return COLUMNPro.concat(parameterStr).concat(finalKeysList);
+    };
 
     // get IColumn[]
     // when user click [Add Column] need to use the function
@@ -477,31 +474,29 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         className: 'detail-table',
                         onRender: (record: any) => {
                             const trialStatus = record.status;
-                            const flag: boolean = (trialStatus === 'RUNNING' || trialStatus === 'UNKNOWN') ? false : true;
+                            const flag: boolean = trialStatus === 'RUNNING' || trialStatus === 'UNKNOWN' ? false : true;
                             return (
-                                <Stack className="detail-button" horizontal>
+                                <Stack className='detail-button' horizontal>
                                     {/* see intermediate result graph */}
                                     <PrimaryButton
-                                        className="detail-button-operation"
-                                        title="Intermediate"
+                                        className='detail-button-operation'
+                                        title='Intermediate'
                                         onClick={this.showIntermediateModal.bind(this, record)}
                                     >
                                         {LineChart}
                                     </PrimaryButton>
                                     {/* kill job */}
-                                    {
-                                        flag
-                                            ?
-                                            <PrimaryButton className="detail-button-operation" disabled={true} title="kill">
-                                                {blocked}
-                                            </PrimaryButton>
-                                            :
-                                            <KillJob trial={record} />
-                                    }
+                                    {flag ? (
+                                        <PrimaryButton className='detail-button-operation' disabled={true} title='kill'>
+                                            {blocked}
+                                        </PrimaryButton>
+                                    ) : (
+                                        <KillJob trial={record} />
+                                    )}
                                     {/* Add a new trial-customized trial */}
                                     <PrimaryButton
-                                        className="detail-button-operation"
-                                        title="Customized trial"
+                                        className='detail-button-operation'
+                                        title='Customized trial'
                                         onClick={this.setCustomizedTrial.bind(this, record.id)}
                                         disabled={disabledAddCustomizedTrial}
                                     >
@@ -512,7 +507,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         },
                     });
                     break;
-                case (result):
+                case result:
                     // remove SEARCH_SPACE title
                     // const realItem = item.replace(' (search space)', '');
                     showColumn.push({
@@ -522,9 +517,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         minWidth: 150,
                         onRender: (record: TableRecord) => {
                             const eachTrial = TRIALS.getTrial(record.id);
-                            return (
-                                <span>{eachTrial.description.parameters[item.replace(' (search space)', '')]}</span>
-                            );
+                            return <span>{eachTrial.description.parameters[item.replace(' (search space)', '')]}</span>;
                         },
                     });
                     break;
@@ -542,15 +535,15 @@ class TableList extends React.Component<TableListProps, TableListState> {
                             }
                             return (
                                 <TooltipHost content={other}>
-                                    <div className="ellipsis">{other}</div>
+                                    <div className='ellipsis'>{other}</div>
                                 </TooltipHost>
                             );
-                        }
+                        },
                     });
             }
         }
         return showColumn;
-    }
+    };
 
     componentDidMount(): void {
         window.addEventListener('resize', this.onWindowResize);
@@ -562,44 +555,58 @@ class TableList extends React.Component<TableListProps, TableListState> {
             this.setState({
                 tableSourceForSort: tableSource,
                 tableColumns: this.initTableColumnList(columnList),
-                allColumnList: this.getAllColumnKeys()
+                allColumnList: this.getAllColumnKeys(),
             });
         }
     }
 
     render(): React.ReactNode {
-        const { intermediateKey, modalIntermediateWidth, modalIntermediateHeight,
-            tableColumns, allColumnList, isShowColumn, modalVisible,
-            selectRows, isShowCompareModal, intermediateOtherKeys,
-            isShowCustomizedModal, copyTrialId, intermediateOption, sortMessage
+        const {
+            intermediateKey,
+            modalIntermediateWidth,
+            modalIntermediateHeight,
+            tableColumns,
+            allColumnList,
+            isShowColumn,
+            modalVisible,
+            selectRows,
+            isShowCompareModal,
+            intermediateOtherKeys,
+            isShowCustomizedModal,
+            copyTrialId,
+            intermediateOption,
+            sortMessage,
         } = this.state;
         const { columnList } = this.props;
         const tableSource: Array<TableRecord> = JSON.parse(JSON.stringify(this.state.tableSourceForSort));
         if (sortMessage.field !== '') {
-            tableSource.sort(function (a, b): any {
+            tableSource.sort(function(a, b): any {
                 if (a[sortMessage.field] === undefined) {
                     return 1;
                 }
                 if (b[sortMessage.field] === undefined) {
                     return -1;
                 }
-                return (sortMessage.isDescend ? a[sortMessage.field] < b[sortMessage.field] : a[sortMessage.field] > b[sortMessage.field]) ? 1 : -1;
+                return (sortMessage.isDescend
+                  ? a[sortMessage.field] < b[sortMessage.field]
+                  : a[sortMessage.field] > b[sortMessage.field])
+                    ? 1
+                    : -1;
             });
         }
         return (
             <Stack>
-                <div id="tableList">
+                <div id='tableList'>
                     <DetailsList
                         columns={tableColumns}
                         items={tableSource}
-                        setKey="set"
+                        setKey='set'
                         compact={true}
                         onRenderRow={this.onRenderRow}
                         layoutMode={DetailsListLayoutMode.justified}
                         selectionMode={SelectionMode.multiple}
                         selection={this.getSelectedRows}
                     />
-
                 </div>
                 {/* Intermediate Result Modal */}
                 <Modal
@@ -612,46 +619,40 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         <IconButton
                             styles={iconButtonStyles}
                             iconProps={{ iconName: 'Cancel' }}
-                            ariaLabel="Close popup modal"
+                            ariaLabel='Close popup modal'
                             onClick={this.hideIntermediateModal as any}
                         />
                     </div>
-                    {
-                        intermediateOtherKeys.length > 1
-                            ?
-                            <Stack horizontalAlign="end" className="selectKeys">
-                                <Dropdown
-                                    className="select"
-                                    selectedKey={intermediateKey}
-                                    options={
-                                        intermediateOtherKeys.map((key, item) => {
-                                            return {
-                                                key: key, text: intermediateOtherKeys[item]
-                                            };
-                                        })
-                                    }
-                                    onChange={this.selectOtherKeys}
-                                />
-                            </Stack>
-                            :
-                            null
-                    }
-                    <div className="intermediate-graph">
+                    {intermediateOtherKeys.length > 1 ? (
+                        <Stack horizontalAlign='end' className='selectKeys'>
+                            <Dropdown
+                                className='select'
+                                selectedKey={intermediateKey}
+                                options={intermediateOtherKeys.map((key, item) => {
+                                    return {
+                                        key: key,
+                                        text: intermediateOtherKeys[item],
+                                    };
+                                })}
+                                onChange={this.selectOtherKeys}
+                            />
+                        </Stack>
+                    ) : null}
+                    <div className='intermediate-graph'>
                         <ReactEcharts
                             option={intermediateOption}
                             style={{
                                 width: 0.5 * modalIntermediateWidth,
                                 height: 0.7 * modalIntermediateHeight,
-                                padding: 20
+                                padding: 20,
                             }}
-                            theme="my_theme"
+                            theme='my_theme'
                         />
-                        <div className="xAxis">#Intermediate result</div>
+                        <div className='xAxis'>#Intermediate result</div>
                     </div>
                 </Modal>
                 {/* Add Column Modal */}
-                {
-                    isShowColumn &&
+                {isShowColumn && (
                     <ChangeColumnComponent
                         hideShowColumnDialog={this.hideShowColumnModal}
                         isHideDialog={!isShowColumn}
@@ -659,7 +660,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         selectedColumn={columnList}
                         changeColumn={this.props.changeColumn}
                     />
-                }
+                )}
                 {/* compare trials based message */}
                 {isShowCompareModal && <Compare compareStacks={selectRows} cancelFunc={this.hideCompareModal} />}
                 {/* clone trial parameters and could submit a customized trial */}

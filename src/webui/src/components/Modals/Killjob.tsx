@@ -1,8 +1,13 @@
 import * as React from 'react';
 import {
-    Stack, FocusTrapCallout, DefaultButton,
+    Stack,
+    FocusTrapCallout,
+    DefaultButton,
     FocusZone,
-    PrimaryButton, getTheme, mergeStyleSets, FontWeights
+    PrimaryButton,
+    getTheme,
+    mergeStyleSets,
+    FontWeights,
 } from 'office-ui-fabric-react';
 import { killJob } from '../../static/function';
 import { blocked } from '../Buttons/Icon';
@@ -13,45 +18,45 @@ const styles = mergeStyleSets({
         verticalAlign: 'top',
         display: 'inline-block',
         textAlign: 'center',
-        height: 32
+        height: 32,
     },
     callout: {
-        maxWidth: 300
+        maxWidth: 300,
     },
     header: {
-        padding: '18px 24px 12px'
+        padding: '18px 24px 12px',
     },
     title: [
         theme.fonts.xLarge,
         {
             margin: 0,
             color: theme.palette.neutralPrimary,
-            fontWeight: FontWeights.semilight
-        }
+            fontWeight: FontWeights.semilight,
+        },
     ],
     inner: {
         height: '100%',
-        padding: '0 24px 20px'
+        padding: '0 24px 20px',
     },
     actions: {
         position: 'relative',
         marginTop: 20,
         width: '100%',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
     },
     buttons: {
         display: 'flex',
         justifyContent: 'flex-end',
-        padding: '0 24px 24px'
+        padding: '0 24px 24px',
     },
     subtext: [
         theme.fonts.small,
         {
             margin: 0,
             color: theme.palette.neutralPrimary,
-            fontWeight: FontWeights.semilight
-        }
-    ]
+            fontWeight: FontWeights.semilight,
+        },
+    ],
 });
 
 interface KillJobState {
@@ -63,7 +68,6 @@ interface KillJobProps {
 }
 
 class KillJob extends React.Component<KillJobProps, KillJobState> {
-
     private menuButtonElement!: HTMLElement | null;
     constructor(props: KillJobProps) {
         super(props);
@@ -72,20 +76,20 @@ class KillJob extends React.Component<KillJobProps, KillJobState> {
 
     onDismiss = (): void => {
         this.setState(() => ({ isCalloutVisible: false }));
-    }
+    };
 
     onKill = (): void => {
         this.setState({ isCalloutVisible: false }, () => {
             const { trial } = this.props;
             killJob(trial.key, trial.jobId, trial.status);
         });
-    }
+    };
 
     openPromot = (event: React.SyntheticEvent<EventTarget>): void => {
         event.preventDefault();
         event.stopPropagation();
         this.setState({ isCalloutVisible: true });
-    }
+    };
 
     render(): React.ReactNode {
         const { isCalloutVisible } = this.state;
@@ -93,12 +97,14 @@ class KillJob extends React.Component<KillJobProps, KillJobState> {
         return (
             <div>
                 <div className={styles.buttonArea} ref={(menuButton): any => (this.menuButtonElement = menuButton)}>
-                    <PrimaryButton className="detail-button-operation" onClick={this.openPromot} title="kill">{blocked}</PrimaryButton>
+                    <PrimaryButton className='detail-button-operation' onClick={this.openPromot} title='kill'>
+                        {blocked}
+                    </PrimaryButton>
                 </div>
                 {isCalloutVisible ? (
                     <div>
                         <FocusTrapCallout
-                            role="alertdialog"
+                            role='alertdialog'
                             className={styles.callout}
                             gapSpace={0}
                             target={this.menuButtonElement}

@@ -25,7 +25,6 @@ interface CustomizeState {
 }
 
 class Customize extends React.Component<CustomizeProps, CustomizeState> {
-
     constructor(props: CustomizeProps) {
         super(props);
         this.state = {
@@ -36,17 +35,15 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
             copyTrialParameter: {},
             customParameters: {},
             customID: NaN,
-            changeMap: new Map
+            changeMap: new Map(),
         };
     }
 
     getFinalVal = (event: React.ChangeEvent<HTMLInputElement>): void => {
-
         const { name, value } = event.target;
         const { changeMap } = this.state;
         this.setState({ changeMap: changeMap.set(name, value) });
-
-    }
+    };
 
     // [submit click] user add a new trial [submit a trial]
     addNewTrial = (): void => {
@@ -54,7 +51,7 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
         // get user edited hyperParameter, ps: will change data type if you modify the input val
         const customized = JSON.parse(JSON.stringify(copyTrialParameter));
         // changeMap: user changed keys: values
-        changeMap.forEach(function (value, key) {
+        changeMap.forEach(function(value, key) {
             customized[key] = value;
         });
 
@@ -72,14 +69,17 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     return;
                 }
                 if (searchSpace[item]._type === 'choice') {
-                    if (searchSpace[item]._value.find((val: string | number) =>
-                        val === customized[item]) === undefined) {
+                    if (
+                        searchSpace[item]._value.find((val: string | number) => val === customized[item]) === undefined
+                    ) {
                         parametersIllegal = true;
                         return;
                     }
                 } else {
-                    if (customized[item] < searchSpace[item]._value[0]
-                        || customized[item] > searchSpace[item]._value[1]) {
+                    if (
+                        customized[item] < searchSpace[item]._value[0] ||
+                        customized[item] > searchSpace[item]._value[1]
+                    ) {
                         parametersIllegal = true;
                         return;
                     }
@@ -93,18 +93,17 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
             // submit a customized job
             this.submitCustomize(customized);
         }
-
-    }
+    };
 
     warningConfirm = (): void => {
         this.setState(() => ({ isShowWarning: false }));
         const { customParameters } = this.state;
         this.submitCustomize(customParameters);
-    }
+    };
 
     warningCancel = (): void => {
         this.setState(() => ({ isShowWarning: false }));
-    }
+    };
 
     submitCustomize = (customized: Record<string, any>): void => {
         // delete `tag` key
@@ -116,7 +115,7 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
         axios(`${MANAGER_IP}/trial-jobs`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            data: customized
+            data: customized,
         })
             .then(res => {
                 if (res.status === 200) {
@@ -129,19 +128,19 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
             .catch(() => {
                 this.setState(() => ({ isShowSubmitFailed: true }));
             });
-    }
+    };
 
     closeSucceedHint = (): void => {
         // also close customized trial modal
         this.setState(() => ({ isShowSubmitSucceed: false, changeMap: new Map() }));
         this.props.closeCustomizeModal();
-    }
+    };
 
     closeFailedHint = (): void => {
         // also close customized trial modal
         this.setState(() => ({ isShowSubmitFailed: false, changeMap: new Map() }));
         this.props.closeCustomizeModal();
-    }
+    };
 
     componentDidMount(): void {
         const { copyTrialId } = this.props;
@@ -164,8 +163,9 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
     render(): React.ReactNode {
         const { closeCustomizeModal, visible } = this.props;
         const { isShowSubmitSucceed, isShowSubmitFailed, isShowWarning, customID, copyTrialParameter } = this.state;
-        const warning = 'The parameters you set are not in our search space, this may cause the tuner to crash, Are'
-            + ' you sure you want to continue submitting?';
+        const warning =
+            'The parameters you set are not in our search space, this may cause the tuner to crash, Are' +
+            ' you sure you want to continue submitting?';
         return (
             <Stack>
                 <Dialog
@@ -173,30 +173,29 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     dialogContentProps={{
                         type: DialogType.largeHeader,
                         title: 'Customized trial setting',
-                        subText: 'You can submit a customized trial.'
+                        subText: 'You can submit a customized trial.',
                     }}
                     modalProps={{
                         isBlocking: false,
-                        styles: { main: { maxWidth: 450 } }
+                        styles: { main: { maxWidth: 450 } },
                     }}
                 >
-                    <form className="hyper-box">
-                        {
-                            Object.keys(copyTrialParameter).map(item => (
-                                <Stack horizontal key={item} className="hyper-form">
-                                    <StackItem styles={{ root: { minWidth: 100 } }} className="title">{item}</StackItem>
-                                    <StackItem className="inputs">
-                                        <input
-                                            type="text"
-                                            name={item}
-                                            defaultValue={copyTrialParameter[item]}
-                                            onChange={this.getFinalVal}
-                                        />
-                                    </StackItem>
-                                </Stack>
-                            )
-                            )
-                        }
+                    <form className='hyper-box'>
+                        {Object.keys(copyTrialParameter).map(item => (
+                            <Stack horizontal key={item} className='hyper-form'>
+                                <StackItem styles={{ root: { minWidth: 100 } }} className='title'>
+                                    {item}
+                                </StackItem>
+                                <StackItem className='inputs'>
+                                    <input
+                                        type='text'
+                                        name={item}
+                                        defaultValue={copyTrialParameter[item]}
+                                        onChange={this.getFinalVal}
+                                    />
+                                </StackItem>
+                            </Stack>
+                        ))}
                         {/* disable [tag] because we havn't support */}
                         {/* <Stack key="tag" horizontal className="hyper-form tag-input">
                             <StackItem grow={9} className="title">Tag</StackItem>
@@ -206,8 +205,8 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                         </Stack> */}
                     </form>
                     <DialogFooter>
-                        <PrimaryButton text="Submit" onClick={this.addNewTrial} />
-                        <DefaultButton text="Cancel" onClick={closeCustomizeModal} />
+                        <PrimaryButton text='Submit' onClick={this.addNewTrial} />
+                        <DefaultButton text='Cancel' onClick={closeCustomizeModal} />
                     </DialogFooter>
                 </Dialog>
 
@@ -217,9 +216,14 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     onDismiss={this.closeSucceedHint}
                     dialogContentProps={{
                         type: DialogType.normal,
-                        title: <div className="icon-color">{completed}<b>Submit successfully</b></div>,
+                        title: (
+                            <div className='icon-color'>
+                                {completed}
+                                <b>Submit successfully</b>
+                            </div>
+                        ),
                         closeButtonAriaLabel: 'Close',
-                        subText: `You can find your customized trial by Trial No.${customID}`
+                        subText: `You can find your customized trial by Trial No.${customID}`,
                     }}
                     modalProps={{
                         isBlocking: false,
@@ -227,7 +231,7 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     }}
                 >
                     <DialogFooter>
-                        <PrimaryButton onClick={this.closeSucceedHint} text="OK" />
+                        <PrimaryButton onClick={this.closeSucceedHint} text='OK' />
                     </DialogFooter>
                 </Dialog>
 
@@ -236,9 +240,9 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     onDismiss={this.closeSucceedHint}
                     dialogContentProps={{
                         type: DialogType.normal,
-                        title: <div className="icon-error">{errorBadge}Submit Failed</div>,
+                        title: <div className='icon-error'>{errorBadge}Submit Failed</div>,
                         closeButtonAriaLabel: 'Close',
-                        subText: 'Unknown error.'
+                        subText: 'Unknown error.',
                     }}
                     modalProps={{
                         isBlocking: false,
@@ -246,7 +250,7 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     }}
                 >
                     <DialogFooter>
-                        <PrimaryButton onClick={this.closeFailedHint} text="OK" />
+                        <PrimaryButton onClick={this.closeFailedHint} text='OK' />
                     </DialogFooter>
                 </Dialog>
 
@@ -256,9 +260,9 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     onDismiss={this.closeSucceedHint}
                     dialogContentProps={{
                         type: DialogType.normal,
-                        title: <div className="icon-error">{warining}Warning</div>,
+                        title: <div className='icon-error'>{warining}Warning</div>,
                         closeButtonAriaLabel: 'Close',
-                        subText: `${warning}`
+                        subText: `${warning}`,
                     }}
                     modalProps={{
                         isBlocking: false,
@@ -266,12 +270,11 @@ class Customize extends React.Component<CustomizeProps, CustomizeState> {
                     }}
                 >
                     <DialogFooter>
-                        <PrimaryButton onClick={this.warningConfirm} text="Confirm" />
-                        <DefaultButton onClick={this.warningCancel} text="Cancel" />
+                        <PrimaryButton onClick={this.warningConfirm} text='Confirm' />
+                        <DefaultButton onClick={this.warningCancel} text='Cancel' />
                     </DialogFooter>
                 </Dialog>
             </Stack>
-
         );
     }
 }

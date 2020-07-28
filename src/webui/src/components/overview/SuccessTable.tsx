@@ -47,7 +47,7 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
         const newItems = this.copyAndSort(source, currColumn.fieldName!, currColumn.isSortedDescending);
         this.setState({
             columns: newColumns,
-            source: newItems
+            source: newItems,
         });
     };
 
@@ -59,7 +59,9 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
     tooltipStr = (
         <div>
             <p>The experiment is running, please wait for the final metric patiently.</p>
-            <div className="link">You could also find status of trial job with <span>{DETAILTABS}</span> button.</div>
+            <div className='link'>
+                You could also find status of trial job with <span>{DETAILTABS}</span> button.
+            </div>
         </div>
     );
 
@@ -72,8 +74,9 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
             maxWidth: 120,
             isResizable: true,
             data: 'number',
-            onColumnClick: this.onColumnClick
-        }, {
+            onColumnClick: this.onColumnClick,
+        },
+        {
             name: 'ID',
             key: 'id',
             fieldName: 'id',
@@ -82,8 +85,9 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
             isResizable: true,
             className: 'tableHead leftTitle',
             data: 'string',
-            onColumnClick: this.onColumnClick
-        }, {
+            onColumnClick: this.onColumnClick,
+        },
+        {
             name: 'Duration',
             key: 'duration',
             minWidth: 100,
@@ -94,10 +98,13 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
             onColumnClick: this.onColumnClick,
             onRender: (item: any): React.ReactNode => {
                 return (
-                    <div className="durationsty"><div>{convertDuration(item.duration)}</div></div>
+                    <div className='durationsty'>
+                        <div>{convertDuration(item.duration)}</div>
+                    </div>
                 );
             },
-        }, {
+        },
+        {
             name: 'Status',
             key: 'status',
             minWidth: 140,
@@ -105,11 +112,10 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
             isResizable: true,
             fieldName: 'status',
             onRender: (item: any): React.ReactNode => {
-                return (
-                    <div className={`${item.status} commonStyle`}>{item.status}</div>
-                );
-            }
-        }, {
+                return <div className={`${item.status} commonStyle`}>{item.status}</div>;
+            },
+        },
+        {
             name: 'Default metric',
             key: 'accuracy',
             fieldName: 'accuracy',
@@ -119,15 +125,13 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
             data: 'number',
             onColumnClick: this.onColumnClick,
             onRender: (item: any): React.ReactNode => {
-                return (
-                    <DefaultMetric trialId={item.id} />
-                );
-            }
-        }
+                return <DefaultMetric trialId={item.id} />;
+            },
+        },
     ];
 
     componentDidUpdate(prevProps: SuccessTableProps): void {
-        if(this.props.trialIds !== prevProps.trialIds){
+        if (this.props.trialIds !== prevProps.trialIds) {
             const { trialIds } = this.props;
             this.setState(() => ({ source: TRIALS.table(trialIds) }));
         }
@@ -135,20 +139,20 @@ class SuccessTable extends React.Component<SuccessTableProps, SuccessTableState>
 
     render(): React.ReactNode {
         const { columns, source } = this.state;
-        const isNoneData = (source.length === 0) ? true : false;
-        
+        const isNoneData = source.length === 0 ? true : false;
+
         return (
-            <div id="succTable">
+            <div id='succTable'>
                 <DetailsList
                     columns={columns}
                     items={source}
-                    setKey="set"
+                    setKey='set'
                     compact={true}
                     onRenderRow={this.onRenderRow}
                     selectionMode={0} // close selector function
-                    className="succTable"
+                    className='succTable'
                 />
-                {isNoneData && <div className="succTable-tooltip">{this.tooltipStr}</div>}
+                {isNoneData && <div className='succTable-tooltip'>{this.tooltipStr}</div>}
             </div>
         );
     }

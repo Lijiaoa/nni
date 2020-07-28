@@ -13,13 +13,9 @@ const trialJobStatus = [
     'FAILED',
     'USER_CANCELED',
     'SYS_CANCELED',
-    'EARLY_STOPPED'
+    'EARLY_STOPPED',
 ];
-const CONTROLTYPE = [
-    'SEARCH_SPACE',
-    'TRIAL_CONCURRENCY',
-    'MAX_EXEC_DURATION'
-];
+const CONTROLTYPE = ['SEARCH_SPACE', 'TRIAL_CONCURRENCY', 'MAX_EXEC_DURATION'];
 const MONACO = {
     readOnly: true,
     automaticLayout: true,
@@ -28,14 +24,23 @@ const MONACO = {
 const DRAWEROPTION = {
     minimap: { enabled: false },
     readOnly: true,
-    automaticLayout: true
+    automaticLayout: true,
 };
 const OPERATION = 'Operation';
 // defatult selected column
 const COLUMN = ['Trial No.', 'ID', 'Duration', 'Status', 'Default', OPERATION];
 // all choice column !dictory final
-const COLUMNPro = ['Trial No.', 'ID', 'Start Time', 'End Time', 'Duration', 'Status',
-    'Intermediate result', 'Default', OPERATION];
+const COLUMNPro = [
+    'Trial No.',
+    'ID',
+    'Start Time',
+    'End Time',
+    'Duration',
+    'Status',
+    'Intermediate result',
+    'Default',
+    OPERATION,
+];
 const CONCURRENCYTOOLTIP = 'Trial concurrency is the number of trials running concurrently.';
 const SUPPORTED_SEARCH_SPACE_TYPE = [
     'choice',
@@ -49,12 +54,22 @@ const SUPPORTED_SEARCH_SPACE_TYPE = [
     'normal',
     'qnormal',
     'lognormal',
-    'qlognormal'
+    'qlognormal',
 ];
 
 export {
-    MANAGER_IP, DOWNLOAD_IP, trialJobStatus, COLUMNPro, WEBUIDOC,
-    CONTROLTYPE, MONACO, COLUMN, DRAWEROPTION, OPERATION,
-    METRIC_GROUP_UPDATE_THRESHOLD, METRIC_GROUP_UPDATE_SIZE, CONCURRENCYTOOLTIP,
-    SUPPORTED_SEARCH_SPACE_TYPE
+    MANAGER_IP,
+    DOWNLOAD_IP,
+    trialJobStatus,
+    COLUMNPro,
+    WEBUIDOC,
+    CONTROLTYPE,
+    MONACO,
+    COLUMN,
+    DRAWEROPTION,
+    OPERATION,
+    METRIC_GROUP_UPDATE_THRESHOLD,
+    METRIC_GROUP_UPDATE_SIZE,
+    CONCURRENCYTOOLTIP,
+    SUPPORTED_SEARCH_SPACE_TYPE,
 };

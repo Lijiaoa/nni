@@ -5,7 +5,7 @@ const contentStyles = mergeStyleSets({
     container: {
         display: 'flex',
         flexFlow: 'column nowrap',
-        alignItems: 'stretch'
+        alignItems: 'stretch',
     },
     header: [
         theme.fonts.xLargePlus,
@@ -17,8 +17,8 @@ const contentStyles = mergeStyleSets({
             fontSize: FontSizes.xLarge,
             alignItems: 'center',
             fontWeight: FontWeights.semibold,
-            padding: '12px 12px 14px 24px'
-        }
+            padding: '12px 12px 14px 24px',
+        },
     ],
     body: {
         flex: '4 4 auto',
@@ -26,16 +26,16 @@ const contentStyles = mergeStyleSets({
         overflowY: 'hidden',
         selectors: {
             p: {
-                margin: '14px 0'
+                margin: '14px 0',
             },
             'p:first-child': {
-                marginTop: 0
+                marginTop: 0,
             },
             'p:last-child': {
-                marginBottom: 0
-            }
-        }
-    }
+                marginBottom: 0,
+            },
+        },
+    },
 });
 
 const iconButtonStyles = mergeStyleSets({
@@ -43,11 +43,11 @@ const iconButtonStyles = mergeStyleSets({
         color: theme.palette.neutralPrimary,
         marginLeft: 'auto',
         marginTop: '4px',
-        marginRight: '2px'
+        marginRight: '2px',
     },
     rootHovered: {
-        color: theme.palette.neutralDark
-    }
+        color: theme.palette.neutralDark,
+    },
 });
 
 export { contentStyles, iconButtonStyles };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import echarts from 'echarts/lib/echarts';
 echarts.registerTheme('my_theme', {
-    color: '#3c8dbc'
+    color: '#3c8dbc',
 });
 import 'echarts/lib/chart/scatter';
 import 'echarts/lib/component/tooltip';
@@ -15,10 +15,8 @@ interface AccuracyProps {
 }
 
 class Accuracy extends React.Component<AccuracyProps, {}> {
-
     constructor(props: AccuracyProps) {
         super(props);
-
     }
 
     render(): React.ReactNode {
@@ -31,9 +29,9 @@ class Accuracy extends React.Component<AccuracyProps, {}> {
                         height: height,
                         margin: '0 auto',
                     }}
-                    theme="my_theme"
+                    theme='my_theme'
                 />
-                <div className="showMess">{accNodata}</div>
+                <div className='showMess'>{accNodata}</div>
             </div>
         );
     }
