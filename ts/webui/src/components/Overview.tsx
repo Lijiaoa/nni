@@ -81,7 +81,7 @@ class Overview extends React.Component<{}, OverviewState> {
                             <div className='wrapper'>
                                 {/* exp params */}
                                 <div className='overviewBasicInfo'>
-                                    <TitleContext.Provider value={{ text: 'Experiment', icon: 'AutoRacing' }}>
+                                    <TitleContext.Provider value={{ text: 'sss', icon: 'AutoRacing' }}>
                                         <Title />
                                     </TitleContext.Provider>
                                     <BestMetricContext.Provider value={{ bestAccuracy: bestAccuracy }}>
@@ -167,7 +167,7 @@ class Overview extends React.Component<{}, OverviewState> {
                                             </Stack>
                                         </div>
                                     </Stack>
-                                    <SuccessTable trialIds={bestTrials.map(trial => trial.info.id)} />
+                                    <SuccessTable trialIds={bestTrials.map(trial => trial.info.trialJobId)} />
                                 </div>
                                 <div className='overviewCommand1'>
                                     <Command1 />
