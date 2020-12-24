@@ -1,5 +1,42 @@
+============
 WebUI
-=====
+============
+
+Experiments managerment
+===============
+
+View experiments list
+---------------------
+
+Click the tab ``All experiments`` on the nav bar.
+
+.. image:: ../../img/webui-img/managerExperimentList/experimentListNav.png
+   :target: ../../img/webui-img/managerExperimentList/experimentListNav.png
+   :alt: ExperimentListNav
+
+* On the ``All experiments`` page, you can see all the experiments on your machine. 
+
+.. image:: ../../img/webui-img/managerExperimentList/expList.png
+   :target: ../../img/webui-img/managerExperimentList/expList.png
+   :alt: 
+
+
+* When you want to see more details about an experiments you could click this line, look that:
+
+.. image:: ../../img/webui-img/managerExperimentList/expFilter.png
+   :target: ../../img/webui-img/managerExperimentList/expFilter.png
+   :alt: 
+
+
+* If has many experiments on the table, you could open the ``filter`` button to filter data.
+
+.. image:: ../../img/webui-img/managerExperimentList/expFilter.png
+   :target: ../../img/webui-img/managerExperimentList/expFilter.png
+   :alt: 
+
+
+Experiment
+===============
 
 View summary page
 -----------------
