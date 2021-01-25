@@ -47,8 +47,14 @@ class DefaultPoint extends React.Component<DefaultPointProps, DefaultPointState>
         this.setState({ bestCurveEnabled: checked });
     };
 
-    shouldComponentUpdate(nextProps: DefaultPointProps): boolean {
-        return nextProps.visible;
+    // 这个图只显示成功的trial，所以如没有新加入的trial id, 页面就不必刷新
+    shouldComponentUpdate(prevProps: DefaultPointProps): boolean {
+        if (prevProps.trialIds !== this.props.trialIds) {
+            // if (prevProps.trialIds.length !== this.props.trialIds.length) {
+            return true;
+        }
+
+        return false;
     }
 
     metricDataZoom = (e: EventMap): void => {
@@ -148,10 +154,15 @@ class DefaultPoint extends React.Component<DefaultPointProps, DefaultPointState>
         };
     }
 
+    private pointClick(_e: EventMap, params: any): void {
+        console.info('params', params); // eslint-disable-line
+    }
+
     render(): React.ReactNode {
+        console.info('render defatult metric'); // eslint-disable-line
         const graph = this.generateGraph();
         const accNodata = graph === EmptyGraph ? 'No data' : '';
-        const onEvents = { dataZoom: this.metricDataZoom };
+        const onEvents = { dataZoom: this.metricDataZoom, click: this.pointClick };
 
         return (
             <div>

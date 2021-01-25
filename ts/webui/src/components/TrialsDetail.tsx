@@ -51,11 +51,7 @@ class TrialsDetail extends React.Component<{}, TrialDetailState> {
                                 selectedKey={whichChart}
                             >
                                 {/* <PivotItem tab={this.titleOfacc} key="1"> doesn't work*/}
-                                <PivotItem headerText='Default metric' itemIcon='HomeGroup' key='Default metric'>
-                                    <Stack className='graph'>
-                                        <DefaultPoint trialIds={trialIds} visible={whichChart === 'Default metric'} />
-                                    </Stack>
-                                </PivotItem>
+
                                 {/* <PivotItem tab={this.titleOfhyper} key="2"> */}
                                 <PivotItem headerText='Hyper-parameter' itemIcon='Equalizer' key='Hyper-parameter'>
                                     <Stack className='graph'>
@@ -64,6 +60,11 @@ class TrialsDetail extends React.Component<{}, TrialDetailState> {
                                             searchSpace={EXPERIMENT.searchSpaceNew}
                                             whichChart={whichChart}
                                         />
+                                    </Stack>
+                                </PivotItem>
+                                <PivotItem headerText='Default metric' itemIcon='HomeGroup' key='Default metric'>
+                                    <Stack className='graph'>
+                                        <DefaultPoint trialIds={trialIds} visible={whichChart === 'Default metric'} />
                                     </Stack>
                                 </PivotItem>
                                 {/* <PivotItem tab={this.titleOfDuration} key="3"> */}
