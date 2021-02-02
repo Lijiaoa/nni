@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, Panel, StackItem, PrimaryButton, DetailsList, IColumn, IconButton } from '@fluentui/react';
 import DialogDetail from './DialogDetail';
-import axios from 'axios';
-import { caclMonacoEditorHeight, requestAxios } from '../../../static/function';
-import { MANAGER_IP } from '../../../static/const';
+import { caclMonacoEditorHeight } from '../../../static/function';
 import '../../../static/style/tensorboard.scss';
 
 function Tensorboard(props): any {
@@ -66,56 +64,35 @@ function Tensorboard(props): any {
     }
 
     async function openTrialTensorboard(id: string): Promise<void> {
-        /** Get tensorboard status
-            Request: Get /api/v1/tensorboard/:id
-            Response if success:
-            Status:200
-            {
-                "status": "downloading data | running | stopping | stopped"
-                "url": "tensorboard url"
-            }
-        */
-        //    效果演示代码
-        //    await setStatus('downloag');
-        //    await setVisibleDialog(true);
         console.info(id);
-        await requestAxios(`${MANAGER_IP}/tensorboard/:${id}`)
-            .then(data => {
-                if (data.status !== 'downloading data') {
-                    // trial 启动成功
-                    window.open(data.url);
-                } else {
-                    // 提示trial正在起tensorboard, 展示当前状态，
-                    setDialogContent(`Please waiting some time to see tensorboard because this trial's tensorboard status is ${status}`);
-                    setVisibleDialog(true);
-                }
-            })
-            .catch(error => {
-                // 提示有问题，请重新点击
-                setDialogContent(error.message);
-                setVisibleDialog(true);
-            });
+        // 查看tensorboard成功的demo
+        if(id === 'RZnms'){
+            window.open('https://developer.microsoft.com/en-us/fluentui#/components/ComboBox');
+        }
+        // tensorboard正在启动状态
+        if(id === 'd9P3u'){
+            setDialogContent(`This trial's tensorboard is not ready and current status is 'download data'.`);
+            setVisibleDialog(true);
+        }
+        // tensorboard api发生某些问题
+        if(id === 'vh6bg'){
+            setDialogContent(`Met some error...`);
+            setVisibleDialog(true);
+        }
     }
 
     async function deleteOneTrialTensorboard(id: string): Promise<void> {
-        /**
-         * 	4. Stop tensorboard
-                Request: DELETE /api/v1/tensorboard/:id
-                Response if success
-                {
-                    status: "stopping"
-                }
-        */
-
-        const response = await axios.delete(`${MANAGER_IP}/tensorboard/:${id}`);
-        if (response.status === 200) {
+        // stopped trial tensorboard succeed
+        if(id === 'uwY2R'){
             const a = deleteIDs;
             a.push(id);
             setDeleteIDs(a);
             setTrialCount(trialIDs.length - a.length);
-            setDialogContent(`Had stopped trial ${id}'s tensorboard`);
-        } else {
-            setDialogContent(`Failed to stopped trial ${id}'s tensorboard`);
+            setDialogContent(`Had stopped trial ${id} tensorboard`);
+        }
+        // api 
+        if(id === 'PZxMv'){
+            setDialogContent(`api error, failed to stop ${id} tensorboard`);
         }
         setVisibleDialog(true);
 
