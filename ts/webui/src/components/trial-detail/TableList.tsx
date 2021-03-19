@@ -10,7 +10,8 @@ import {
     Stack,
     StackItem,
     TooltipHost,
-    DirectionalHint
+    DirectionalHint,
+    mergeStyleSets
 } from '@fluentui/react';
 import React from 'react';
 import { EXPERIMENT, TRIALS } from '../../static/datamodel';
@@ -213,6 +214,42 @@ class TableList extends React.Component<TableListProps, TableListState> {
             return items;
         }
     }
+    private classNames = mergeStyleSets({
+        fileIconHeaderIcon: {
+          padding: 0,
+          fontSize: '16px',
+        },
+        fileIconCell: {
+          textAlign: 'center',
+          selectors: {
+            '&:before': {
+              content: '.',
+              display: 'inline-block',
+              verticalAlign: 'middle',
+              height: '100%',
+              width: '0px',
+              visibility: 'hidden',
+            },
+          },
+        },
+        fileIconImg: {
+          verticalAlign: 'middle',
+          maxHeight: '16px',
+          maxWidth: '16px',
+        },
+        controlWrapper: {
+          display: 'flex',
+          flexWrap: 'wrap',
+        },
+        exampleToggle: {
+          display: 'inline-block',
+          marginBottom: '10px',
+          marginRight: '30px',
+        },
+        selectionDetails: {
+          marginBottom: '20px',
+        },
+      });
 
     private _buildColumnsFromTableItems(tableItems: any[]): IColumn[] {
         // extra column, for a icon to expand the trial details panel
@@ -368,16 +405,31 @@ class TableList extends React.Component<TableListProps, TableListState> {
             });
         }
         // operations column
-        columns.push({
-            name: 'Operation',
-            key: '_operation',
-            fieldName: 'operation',
-            minWidth: 150,
-            maxWidth: 160,
-            isResizable: true,
-            className: 'detail-table',
-            onRender: this._renderOperationColumn.bind(this)
-        });
+        columns.push(
+            {
+                name: 'Operation',
+                key: '_operation',
+                fieldName: 'operation',
+                minWidth: 150,
+                maxWidth: 160,
+                isResizable: true,
+                className: 'detail-table',
+                onRender: this._renderOperationColumn.bind(this)
+            },
+            {
+                name: 'setting',
+                key: '_setting',
+                fieldName: '',
+                // className: this.classNames.fileIconCell,
+                // iconClassName: this.classNames.fileIconHeaderIcon,
+                iconClassName: 'OpenFile',
+                isIconOnly: true,
+                minWidth: 30,
+                maxWidth: 30,
+                isResizable: true,
+                onColumnClick: (): void => this.setState({ customizeColumnsDialogVisible: true })
+            }
+        );
 
         const { sortInfo } = this.state;
         for (const column of columns) {
@@ -528,7 +580,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                     <PaginationTable
                         columns={columns.filter(
                             column =>
-                                displayedColumns.includes(column.key) || ['_expand', '_operation'].includes(column.key)
+                                displayedColumns.includes(column.key) || ['_expand', '_operation', '_setting'].includes(column.key)
                         )}
                         items={displayedItems}
                         compact={true}
