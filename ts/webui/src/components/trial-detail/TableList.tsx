@@ -1,9 +1,7 @@
 import {
     DefaultButton,
-    Dropdown,
     IColumn,
     Icon,
-    IDropdownOption,
     PrimaryButton,
     Selection,
     SelectionMode,
@@ -40,12 +38,12 @@ require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
 
 type SearchOptionType = 'id' | 'trialnum' | 'status' | 'parameters';
-const searchOptionLiterals = {
-    id: 'ID',
-    trialnum: 'Trial No.',
-    status: 'Status',
-    parameters: 'Parameters'
-};
+// const searchOptionLiterals = {
+//     id: 'ID',
+//     trialnum: 'Trial No.',
+//     status: 'Status',
+//     parameters: 'Parameters'
+// };
 
 const defaultDisplayedColumns = ['sequenceId', 'id', 'duration', 'status', 'latestAccuracy'];
 
@@ -132,32 +130,41 @@ class TableList extends React.Component<TableListProps, TableListState> {
 
     // This functions as the filter for the final trials displayed in the current table
     private _filterTrials(trials: TableObj[]): TableObj[] {
-        const { searchText, searchType } = this.state;
+        const { searchText } = this.state;
         // search a trial by Trial No. | Trial ID | Parameters | Status
         let searchFilter = (_: TableObj): boolean => true; // eslint-disable-line no-unused-vars
         if (searchText.trim()) {
-            if (searchType === 'id') {
-                searchFilter = (trial): boolean => trial.id.toUpperCase().includes(searchText.toUpperCase());
-            } else if (searchType === 'trialnum') {
-                searchFilter = (trial): boolean => trial.sequenceId.toString() === searchText;
-            } else if (searchType === 'status') {
-                searchFilter = (trial): boolean => trial.status.toUpperCase().includes(searchText.toUpperCase());
-            } else if (searchType === 'parameters') {
-                // TODO: support filters like `x: 2` (instead of `'x': 2`)
-                searchFilter = (trial): boolean => JSON.stringify(trial.description.parameters).includes(searchText);
-            }
+            searchFilter = (trial): boolean => trial.id.toUpperCase().includes(searchText.toUpperCase()) || trial.sequenceId.toString() === searchText || trial.status.toUpperCase().includes(searchText.toUpperCase());
         }
         return trials.filter(searchFilter);
     }
+    // private _filterTrials(trials: TableObj[]): TableObj[] {
+    //     const { searchText, searchType } = this.state;
+    //     // search a trial by Trial No. | Trial ID | Parameters | Status
+    //     let searchFilter = (_: TableObj): boolean => true; // eslint-disable-line no-unused-vars
+    //     if (searchText.trim()) {
+    //         if (searchType === 'id') {
+    //             searchFilter = (trial): boolean => trial.id.toUpperCase().includes(searchText.toUpperCase());
+    //         } else if (searchType === 'trialnum') {
+    //             searchFilter = (trial): boolean => trial.sequenceId.toString() === searchText;
+    //         } else if (searchType === 'status') {
+    //             searchFilter = (trial): boolean => trial.status.toUpperCase().includes(searchText.toUpperCase());
+    //         } else if (searchType === 'parameters') {
+    //             // TODO: support filters like `x: 2` (instead of `'x': 2`)
+    //             searchFilter = (trial): boolean => JSON.stringify(trial.description.parameters).includes(searchText);
+    //         }
+    //     }
+    //     return trials.filter(searchFilter);
+    // }
 
-    private _updateSearchFilterType(_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void {
-        if (item !== undefined) {
-            const value = item.key.toString();
-            if (searchOptionLiterals.hasOwnProperty(value)) {
-                this.setState({ searchType: value as SearchOptionType }, this._updateTableSource);
-            }
-        }
-    }
+    // private _updateSearchFilterType(_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void {
+    //     if (item !== undefined) {
+    //         const value = item.key.toString();
+    //         if (searchOptionLiterals.hasOwnProperty(value)) {
+    //             this.setState({ searchType: value as SearchOptionType }, this._updateTableSource);
+    //         }
+    //     }
+    // }
 
     private _updateSearchText(ev: React.ChangeEvent<HTMLInputElement>): void {
         this.setState({ searchText: ev.target.value }, this._updateTableSource);
@@ -479,7 +486,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
         const {
             displayedItems,
             columns,
-            searchType,
+            // searchType,
             customizeColumnsDialogVisible,
             compareDialogVisible,
             displayedColumns,
@@ -507,7 +514,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                     </StackItem>
                     <StackItem grow={50}>
                         <Stack horizontal horizontalAlign='end' className='allList'>
-                            <Dropdown
+                            {/* <Dropdown
                                 selectedKey={searchType}
                                 options={Object.entries(searchOptionLiterals).map(([k, v]) => ({
                                     key: k,
@@ -515,8 +522,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
                                 }))}
                                 onChange={this._updateSearchFilterType.bind(this)}
                                 styles={{ root: { width: 150 } }}
-                            />
-                            <input
+                            /> */}
+                            {/* <input
                                 type='text'
                                 className='allList-search-input'
                                 placeholder={`Search by ${
@@ -526,7 +533,22 @@ class TableList extends React.Component<TableListProps, TableListState> {
                                 }`}
                                 onChange={this._updateSearchText.bind(this)}
                                 style={{ width: 230 }}
+                            /> */}
+                            <input
+                                type='text'
+                                className='allList-search-input'
+                                placeholder='Find matching trials'
+                                onChange={this._updateSearchText.bind(this)}
+                                style={{ width: 230 }}
                             />
+                            <DefaultButton
+                                text='Advanced search'
+                                className='allList-compare'
+                                onClick={(): void => {
+                                    this.setState({ compareDialogVisible: true });
+                                }}
+                                disabled={selectedRowIds.length === 0}
+                        />
                         </Stack>
                     </StackItem>
                 </Stack>
