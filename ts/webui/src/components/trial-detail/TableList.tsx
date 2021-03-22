@@ -10,8 +10,7 @@ import {
     Stack,
     StackItem,
     TooltipHost,
-    DirectionalHint,
-    mergeStyleSets
+    DirectionalHint
 } from '@fluentui/react';
 import React from 'react';
 import { EXPERIMENT, TRIALS } from '../../static/datamodel';
@@ -214,42 +213,6 @@ class TableList extends React.Component<TableListProps, TableListState> {
             return items;
         }
     }
-    private classNames = mergeStyleSets({
-        fileIconHeaderIcon: {
-          padding: 0,
-          fontSize: '16px',
-        },
-        fileIconCell: {
-          textAlign: 'center',
-          selectors: {
-            '&:before': {
-              content: '.',
-              display: 'inline-block',
-              verticalAlign: 'middle',
-              height: '100%',
-              width: '0px',
-              visibility: 'hidden',
-            },
-          },
-        },
-        fileIconImg: {
-          verticalAlign: 'middle',
-          maxHeight: '16px',
-          maxWidth: '16px',
-        },
-        controlWrapper: {
-          display: 'flex',
-          flexWrap: 'wrap',
-        },
-        exampleToggle: {
-          display: 'inline-block',
-          marginBottom: '10px',
-          marginRight: '30px',
-        },
-        selectionDetails: {
-          marginBottom: '20px',
-        },
-      });
 
     private _buildColumnsFromTableItems(tableItems: any[]): IColumn[] {
         // extra column, for a icon to expand the trial details panel
@@ -417,16 +380,14 @@ class TableList extends React.Component<TableListProps, TableListState> {
                 onRender: this._renderOperationColumn.bind(this)
             },
             {
-                name: 'setting',
+                name: 'setting', // add/remove columns setting
                 key: '_setting',
                 fieldName: '',
-                // className: this.classNames.fileIconCell,
-                // iconClassName: this.classNames.fileIconHeaderIcon,
-                iconClassName: 'OpenFile',
                 isIconOnly: true,
-                minWidth: 30,
-                maxWidth: 30,
-                isResizable: true,
+                iconName: 'Settings',
+                minWidth: 20,
+                maxWidth: 20,
+                isResizable: false,
                 onColumnClick: (): void => this.setState({ customizeColumnsDialogVisible: true })
             }
         );
@@ -546,13 +507,6 @@ class TableList extends React.Component<TableListProps, TableListState> {
                     </StackItem>
                     <StackItem grow={50}>
                         <Stack horizontal horizontalAlign='end' className='allList'>
-                            <DefaultButton
-                                className='allList-button-gap'
-                                text='Add/Remove columns'
-                                onClick={(): void => {
-                                    this.setState({ customizeColumnsDialogVisible: true });
-                                }}
-                            />
                             <Dropdown
                                 selectedKey={searchType}
                                 options={Object.entries(searchOptionLiterals).map(([k, v]) => ({
