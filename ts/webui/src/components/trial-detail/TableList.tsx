@@ -15,19 +15,12 @@ import { EXPERIMENT, TRIALS } from '../../static/datamodel';
 import { TOOLTIP_BACKGROUND_COLOR } from '../../static/const';
 import { convertDuration, formatTimestamp, copyAndSort } from '../../static/function';
 import { TableObj, SortInfo } from '../../static/interface';
-import '../../static/style/search.scss';
-import '../../static/style/tableStatus.css';
-import '../../static/style/logPath.scss';
-import '../../static/style/table.scss';
-import '../../static/style/button.scss';
-import '../../static/style/openRow.scss';
-import '../../static/style/pagination.scss';
-import '../../static/style/overview/overviewTitle.scss';
 import { blocked, copy, LineChart, tableListIcon } from '../buttons/Icon';
 import ChangeColumnComponent from '../modals/ChangeColumnComponent';
 import Compare from '../modals/Compare';
 import Customize from '../modals/CustomizedTrial';
 import KillJob from '../modals/Killjob';
+import AdvancedSearch from '../modals/AdvancedSearch';
 import ExpandableDetails from '../public-child/ExpandableDetails';
 import PaginationTable from '../public-child/PaginationTable';
 import CopyButton from '../public-child/CopyButton';
@@ -36,6 +29,15 @@ import { Trial } from '../../static/model/trial';
 require('echarts/lib/chart/line');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
+
+import '../../static/style/search.scss';
+import '../../static/style/tableStatus.css';
+import '../../static/style/logPath.scss';
+import '../../static/style/table.scss';
+import '../../static/style/button.scss';
+import '../../static/style/openRow.scss';
+import '../../static/style/pagination.scss';
+import '../../static/style/overview/overviewTitle.scss';
 
 type SearchOptionType = 'id' | 'trialnum' | 'status' | 'parameters';
 // const searchOptionLiterals = {
@@ -85,6 +87,7 @@ interface TableListState {
     selectedRowIds: string[];
     customizeColumnsDialogVisible: boolean;
     compareDialogVisible: boolean;
+    advancedSearchDialogVisible: boolean;
     intermediateDialogTrial: TableObj | undefined;
     copiedTrialId: string | undefined;
     sortInfo: SortInfo;
@@ -109,6 +112,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
             searchText: '',
             customizeColumnsDialogVisible: false,
             compareDialogVisible: false,
+            advancedSearchDialogVisible: false,
             selectedRowIds: [],
             intermediateDialogTrial: undefined,
             copiedTrialId: undefined,
@@ -472,6 +476,11 @@ class TableList extends React.Component<TableListProps, TableListState> {
         );
     }
 
+    private searchFun(): void {
+        // advancedSearchDialogVisible
+        this.setState
+    }
+
     componentDidUpdate(prevProps: TableListProps): void {
         if (this.props.tableSource !== prevProps.tableSource) {
             this._updateTableSource();
@@ -489,6 +498,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
             // searchType,
             customizeColumnsDialogVisible,
             compareDialogVisible,
+            advancedSearchDialogVisible,
             displayedColumns,
             selectedRowIds,
             intermediateDialogTrial,
@@ -544,11 +554,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
                             <DefaultButton
                                 text='Advanced search'
                                 className='allList-compare'
-                                onClick={(): void => {
-                                    this.setState({ compareDialogVisible: true });
-                                }}
-                                disabled={selectedRowIds.length === 0}
-                        />
+                                onClick={this.searchFun}
+                            />
                         </Stack>
                     </StackItem>
                 </Stack>
@@ -610,6 +617,13 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         this.setState({ copiedTrialId: undefined });
                     }}
                 />
+                {advancedSearchDialogVisible && (
+                    <AdvancedSearch 
+                        onHideDialog={(): void => {
+                            this.setState({ advancedSearchDialogVisible: false });
+                        }}
+                    />
+                )}
             </div>
         );
     }
