@@ -1,18 +1,18 @@
+import React, {useCallback} from 'react';
 import {
     DefaultButton,
-    Dropdown,
     IColumn,
+    Dropdown,
     Icon,
-    IDropdownOption,
     PrimaryButton,
     Selection,
     SelectionMode,
     Stack,
     StackItem,
     TooltipHost,
-    DirectionalHint
+    DirectionalHint,
+    // Checkbox
 } from '@fluentui/react';
-import React from 'react';
 import { EXPERIMENT, TRIALS } from '../../static/datamodel';
 import { TOOLTIP_BACKGROUND_COLOR } from '../../static/const';
 import { convertDuration, formatTimestamp, copyAndSort } from '../../static/function';
@@ -30,6 +30,7 @@ import ChangeColumnComponent from '../modals/ChangeColumnComponent';
 import Compare from '../modals/Compare';
 import Customize from '../modals/CustomizedTrial';
 import KillJob from '../modals/Killjob';
+import {AdvancedSearch} from '../modals/AdvancedSearch';
 import ExpandableDetails from '../public-child/ExpandableDetails';
 import PaginationTable from '../public-child/PaginationTable';
 import CopyButton from '../public-child/CopyButton';
@@ -40,12 +41,12 @@ require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
 
 type SearchOptionType = 'id' | 'trialnum' | 'status' | 'parameters';
-const searchOptionLiterals = {
-    id: 'ID',
-    trialnum: 'Trial No.',
-    status: 'Status',
-    parameters: 'Parameters'
-};
+// const searchOptionLiterals = {
+//     id: 'ID',
+//     trialnum: 'Trial No.',
+//     status: 'Status',
+//     parameters: 'Parameters'
+// };
 
 const defaultDisplayedColumns = ['sequenceId', 'id', 'duration', 'status', 'latestAccuracy'];
 
@@ -87,9 +88,11 @@ interface TableListState {
     selectedRowIds: string[];
     customizeColumnsDialogVisible: boolean;
     compareDialogVisible: boolean;
+    advancedSearchDialogVisible: boolean;
     intermediateDialogTrial: TableObj | undefined;
     copiedTrialId: string | undefined;
     sortInfo: SortInfo;
+    items: []
 }
 
 class TableList extends React.Component<TableListProps, TableListState> {
@@ -104,17 +107,19 @@ class TableList extends React.Component<TableListProps, TableListState> {
             displayedColumns:
                 localStorage.getItem('columns') !== null
                     ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      JSON.parse(localStorage.getItem('columns')!)
+                    JSON.parse(localStorage.getItem('columns')!)
                     : defaultDisplayedColumns,
             columns: [],
             searchType: 'id',
             searchText: '',
             customizeColumnsDialogVisible: false,
             compareDialogVisible: false,
+            advancedSearchDialogVisible: false,
             selectedRowIds: [],
             intermediateDialogTrial: undefined,
             copiedTrialId: undefined,
-            sortInfo: { field: '', isDescend: true }
+            sortInfo: { field: '', isDescend: true },
+            items: []
         };
 
         this._selection = new Selection({
@@ -132,32 +137,24 @@ class TableList extends React.Component<TableListProps, TableListState> {
 
     // This functions as the filter for the final trials displayed in the current table
     private _filterTrials(trials: TableObj[]): TableObj[] {
-        const { searchText, searchType } = this.state;
+        const { searchText } = this.state;
+        // const { searchText, searchType } = this.state;
         // search a trial by Trial No. | Trial ID | Parameters | Status
         let searchFilter = (_: TableObj): boolean => true; // eslint-disable-line no-unused-vars
         if (searchText.trim()) {
-            if (searchType === 'id') {
-                searchFilter = (trial): boolean => trial.id.toUpperCase().includes(searchText.toUpperCase());
-            } else if (searchType === 'trialnum') {
-                searchFilter = (trial): boolean => trial.sequenceId.toString() === searchText;
-            } else if (searchType === 'status') {
-                searchFilter = (trial): boolean => trial.status.toUpperCase().includes(searchText.toUpperCase());
-            } else if (searchType === 'parameters') {
-                // TODO: support filters like `x: 2` (instead of `'x': 2`)
-                searchFilter = (trial): boolean => JSON.stringify(trial.description.parameters).includes(searchText);
-            }
+            searchFilter = (trial): boolean => trial.id.toUpperCase().includes(searchText.toUpperCase()) || trial.sequenceId.toString() === searchText || trial.status.toUpperCase().includes(searchText.toUpperCase());
         }
         return trials.filter(searchFilter);
     }
 
-    private _updateSearchFilterType(_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void {
-        if (item !== undefined) {
-            const value = item.key.toString();
-            if (searchOptionLiterals.hasOwnProperty(value)) {
-                this.setState({ searchType: value as SearchOptionType }, this._updateTableSource);
-            }
-        }
-    }
+    // private _updateSearchFilterType(_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void {
+    //     if (item !== undefined) {
+    //         const value = item.key.toString();
+    //         if (searchOptionLiterals.hasOwnProperty(value)) {
+    //             this.setState({ searchType: value as SearchOptionType }, this._updateTableSource);
+    //         }
+    //     }
+    // }
 
     private _updateSearchText(ev: React.ChangeEvent<HTMLInputElement>): void {
         this.setState({ searchText: ev.target.value }, this._updateTableSource);
@@ -213,6 +210,10 @@ class TableList extends React.Component<TableListProps, TableListState> {
             return items;
         }
     }
+
+    // const test = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
+    //     setSelectedItem(item);
+    //   };
 
     private _buildColumnsFromTableItems(tableItems: any[]): IColumn[] {
         // extra column, for a icon to expand the trial details panel
@@ -285,6 +286,15 @@ class TableList extends React.Component<TableListProps, TableListState> {
                     // color status
                     onRender: (record): React.ReactNode => (
                         <span className={`${record.status} commonStyle`}>{record.status}</span>
+                        // <Dropdown
+                        //     selectedKey={record.status}
+                        //     options={['SUCCEEDED', 'FAIED', 'RUNNING'].map(item => ({
+                        //         key: item,
+                        //         text: item
+                        //     }))}
+                        //     onChange={this.test.bind}
+                        //     styles={{ root: { width: 150, marginBottom: 10, marginRight: 10 } }}
+                        // />
                     )
                 }),
                 ...(k === 'message' && {
@@ -377,7 +387,19 @@ class TableList extends React.Component<TableListProps, TableListState> {
             isResizable: true,
             className: 'detail-table',
             onRender: this._renderOperationColumn.bind(this)
-        });
+        },
+            {
+                name: 'setting', // add/remove columns setting
+                key: '_setting',
+                fieldName: '',
+                isIconOnly: true,
+                iconName: 'Settings',
+                minWidth: 20,
+                maxWidth: 20,
+                isResizable: false,
+                onColumnClick: (): void => this.setState({ customizeColumnsDialogVisible: true })
+            }
+        );
 
         const { sortInfo } = this.state;
         for (const column of columns) {
@@ -452,6 +474,17 @@ class TableList extends React.Component<TableListProps, TableListState> {
         );
     }
 
+    private searchFun = (): void => {
+        // advancedSearchDialogVisible
+        this.setState({ advancedSearchDialogVisible: true });
+    }
+
+    private _onChange = (ev: React.FormEvent<HTMLElement>, isChecked: boolean): void => {
+        // private _onChange = (ev: any, isChecked: boolean): void => {
+        console.info(`The option has been changed to ${isChecked}.`);
+        console.info('ddd');
+    }
+
     componentDidUpdate(prevProps: TableListProps): void {
         if (this.props.tableSource !== prevProps.tableSource) {
             this._updateTableSource();
@@ -462,21 +495,32 @@ class TableList extends React.Component<TableListProps, TableListState> {
         this._updateTableSource();
     }
 
+    private onListChange = (): void => (
+        this.setState({items: []})
+        if (isEmpty()) {
+            setParametersState([{ key: '', value: '' }]);
+          } else {
+            setParametersState(param);
+          }
+    )
+
     render(): React.ReactNode {
         const {
             displayedItems,
             columns,
-            searchType,
+            // searchType,
             customizeColumnsDialogVisible,
             compareDialogVisible,
+            // advancedSearchDialogVisible,
             displayedColumns,
             selectedRowIds,
             intermediateDialogTrial,
-            copiedTrialId
+            copiedTrialId,
+            items
         } = this.state;
-
+        
         return (
-            <div id='tableList'>
+            <div id='tableList tablelist-position'>
                 <Stack horizontal className='panelTitle' style={{ marginTop: 10 }}>
                     <span style={{ marginRight: 12 }}>{tableListIcon}</span>
                     <span>Trial jobs</span>
@@ -494,41 +538,54 @@ class TableList extends React.Component<TableListProps, TableListState> {
                     </StackItem>
                     <StackItem grow={50}>
                         <Stack horizontal horizontalAlign='end' className='allList'>
-                            <DefaultButton
-                                className='allList-button-gap'
-                                text='Add/Remove columns'
-                                onClick={(): void => {
-                                    this.setState({ customizeColumnsDialogVisible: true });
-                                }}
-                            />
-                            <Dropdown
-                                selectedKey={searchType}
-                                options={Object.entries(searchOptionLiterals).map(([k, v]) => ({
-                                    key: k,
-                                    text: v
-                                }))}
-                                onChange={this._updateSearchFilterType.bind(this)}
-                                styles={{ root: { width: 150 } }}
-                            />
                             <input
                                 type='text'
                                 className='allList-search-input'
-                                placeholder={`Search by ${
-                                    ['id', 'trialnum'].includes(searchType)
-                                        ? searchOptionLiterals[searchType]
-                                        : searchType
-                                }`}
+                                placeholder='Find matching trials'
                                 onChange={this._updateSearchText.bind(this)}
                                 style={{ width: 230 }}
+                            />
+                            <DefaultButton
+                                text='Advanced search'
+                                className='allList-advance'
+                                onClick={(): void => {
+                                    this.setState({ advancedSearchDialogVisible: true });
+                                }}
                             />
                         </Stack>
                     </StackItem>
                 </Stack>
+                {/* !!!! */}
+                {/* advanced search */}
+                {/* {advancedSearchDialogVisible && ( */}
+                <AdvancedSearch
+                    items={[]}
+                    keyHeader='key'
+                    valueHeader='value'
+                    onChange={}
+                />
+                {/* )} */}
+                <div className='search-card'>
+                    {/* <Checkbox onChange={() => this._onChange} /> */}
+                    {/* 
+                        拿到trial单独的超参名字
+                    */}
+                    <Dropdown
+                        selectedKey='conv_size'
+                        options={['conv_size', 'dropout_rate'].map(item => ({
+                            key: item,
+                            text: item
+                        }))}
+                        // onChange={this._updateSearchFilterType.bind(this)}
+                        styles={{ root: { width: 150 } }}
+                    />
+                </div>
+
                 {columns && displayedItems && (
                     <PaginationTable
                         columns={columns.filter(
                             column =>
-                                displayedColumns.includes(column.key) || ['_expand', '_operation'].includes(column.key)
+                                displayedColumns.includes(column.key) || ['_expand', '_operation', '_setting'].includes(column.key)
                         )}
                         items={displayedItems}
                         compact={true}
@@ -582,6 +639,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         this.setState({ copiedTrialId: undefined });
                     }}
                 />
+                
             </div>
         );
     }

@@ -8,17 +8,18 @@
         margin-top: 15px;
     }
 
+    &-advance {
+        margin-top: 2px;
+    }
+
     &-entry {
         line-height: 32px;
     }
 
-    /* compare button style */
-    &-button-gap {
-        margin-right: 10px;
-    }
-
     &-search-input {
         padding-left: 10px;
+        height: 28px;
+        margin: 1px 10px 0 0;
     }
 }
 
@@ -31,5 +32,15 @@
 
     .ms-Dropdown {
         width: 120px;
+    }
+}
+
+.tablelist-position{
+    position: relative;
+
+    .search-card{
+        position: absolute;
+        top: 20px;
+        right: 80px;
     }
 }
