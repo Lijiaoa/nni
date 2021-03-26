@@ -39,8 +39,39 @@
     position: relative;
 
     .search-card{
+        min-width: 150px;
+        padding: 30px;
+        box-shadow: rgba(0,0,0,.3) 0 0 15px;
         position: absolute;
-        top: 20px;
-        right: 80px;
+        top: 13%;
+        right: 47px;
+        z-index: 999;
+        background: #fff;
+
+    }
+}
+
+.search-card-hidden{
+    display: none;
+}
+
+.search-row{
+    
+    .checkbox{
+        margin-top: 6px;
+        margin-right: 4px;
+    }
+
+    .del-search{
+        i{
+            font-size: 16px;
+            margin-top: 8px;
+        }
+    }
+}
+
+.advanced-btns{
+    .ms-Button--commandBar{
+        height: 38px;
     }
 }

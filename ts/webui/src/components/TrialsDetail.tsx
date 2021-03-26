@@ -37,7 +37,7 @@ class TrialsDetail extends React.Component<{}, TrialDetailState> {
         const { whichChart } = this.state;
         const source = TRIALS.toArray();
         const trialIds = TRIALS.toArray().map(trial => trial.id);
-
+        console.info(source);
         return (
             <AppContext.Consumer>
                 {(_value): React.ReactNode => (
