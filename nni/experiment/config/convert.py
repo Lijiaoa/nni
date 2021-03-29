@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 
 
 def to_v1_yaml(config: ExperimentConfig, skip_nnictl: bool = False) -> Dict[str, Any]:
-    config.validate(skip_nnictl)
+    config.validate(False)
     data = config.json()
 
     ts = data.pop('trainingService')
@@ -91,7 +91,6 @@ def _handle_training_service(ts, data):
             data['localConfig']['gpuIndices'] = _convert_gpu_indices(ts['gpuIndices'])
 
     elif ts['platform'] == 'remote':
-        print(ts)
         data['remoteConfig'] = {'reuse': ts['reuseMode']}
         data['machineList'] = []
         for machine in ts['machineList']:
@@ -105,7 +104,7 @@ def _handle_training_service(ts, data):
                 'gpuIndices': _convert_gpu_indices(machine.get('gpuIndices')),
                 'maxTrialNumPerGpu': machine.get('maxTrialNumPerGpu'),
                 'useActiveGpu': machine.get('useActiveGpu'),
-                'preCommand': machine.get('trialPrepareCommand')
+                'pythonPath': machine.get('pythonPath')
             }
             machine_v1 = {k: v for k, v in machine_v1.items() if v is not None}
             data['machineList'].append(machine_v1)
@@ -293,10 +292,11 @@ def to_rest_json(config: ExperimentConfig) -> Dict[str, Any]:
         request_data['logCollection'] = experiment_config.get('logCollection')
     request_data['clusterMetaData'] = []
     if experiment_config['trainingServicePlatform'] == 'local':
+        if experiment_config.get('localConfig'):
+            request_data['clusterMetaData'].append(
+                {'key': 'local_config', 'value': experiment_config['localConfig']})
         request_data['clusterMetaData'].append(
-            {'key':'codeDir', 'value':experiment_config['trial']['codeDir']})
-        request_data['clusterMetaData'].append(
-            {'key': 'command', 'value': experiment_config['trial']['command']})
+            {'key': 'trial_config', 'value': experiment_config['trial']})
     elif experiment_config['trainingServicePlatform'] == 'remote':
         request_data['clusterMetaData'].append(
             {'key': 'machine_list', 'value': experiment_config['machineList']})

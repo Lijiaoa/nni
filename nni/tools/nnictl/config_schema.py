@@ -124,7 +124,7 @@ common_schema = {
     Optional('maxExecDuration'): And(Regex(r'^[1-9][0-9]*[s|m|h|d]$', error='ERROR: maxExecDuration format is [digit]{s,m,h,d}')),
     Optional('maxTrialNum'): setNumberRange('maxTrialNum', int, 1, 99999),
     'trainingServicePlatform': setChoice(
-        'trainingServicePlatform', 'remote', 'local', 'pai', 'kubeflow', 'frameworkcontroller', 'paiYarn', 'dlts', 'aml', 'adl', 'hybrid'),
+        'trainingServicePlatform', 'remote', 'local', 'pai', 'kubeflow', 'frameworkcontroller', 'dlts', 'aml', 'adl', 'hybrid'),
     Optional('searchSpacePath'): And(os.path.exists, error=SCHEMA_PATH_ERROR % 'searchSpacePath'),
     Optional('multiPhase'): setType('multiPhase', bool),
     Optional('multiThread'): setType('multiThread', bool),
@@ -142,6 +142,18 @@ common_schema = {
         Optional('gpuIndices'): Or(int, And(str, lambda x: len([int(i) for i in x.split(',')]) > 0), error='gpuIndex format error!'),
         Optional('maxTrialNumPerGpu'): setType('maxTrialNumPerGpu', int),
         Optional('useActiveGpu'): setType('useActiveGpu', bool)
+    },
+    Optional('sharedStorage'): {
+        'storageType': setChoice('storageType', 'NFS', 'AzureBlob'),
+        Optional('localMountPoint'): setType('localMountPoint', str),
+        Optional('remoteMountPoint'): setType('remoteMountPoint', str),
+        Optional('nfsServer'): setType('nfsServer', str),
+        Optional('exportedDirectory'): setType('exportedDirectory', str),
+        Optional('storageAccountName'): setType('storageAccountName', str),
+        Optional('storageAccountKey'): setType('storageAccountKey', str),
+        Optional('containerName'): setType('containerName', str),
+        Optional('resourceGroupName'): setType('resourceGroupName', str),
+        Optional('localMounted'): setChoice('localMounted', 'usermount', 'nnimount', 'nomount')
     }
 }
 
@@ -176,18 +188,6 @@ pai_yarn_trial_schema = {
             "portNumber": setType('portNumber', int)
         }]
     }
-}
-
-pai_yarn_config_schema = {
-    'paiYarnConfig': Or({
-        'userName': setType('userName', str),
-        'passWord': setType('passWord', str),
-        'host': setType('host', str)
-    }, {
-        'userName': setType('userName', str),
-        'token': setType('token', str),
-        'host': setType('host', str)
-    })
 }
 
 
@@ -437,7 +437,7 @@ machine_list_schema = {
             Optional('gpuIndices'): Or(int, And(str, lambda x: len([int(i) for i in x.split(',')]) > 0), error='gpuIndex format error!'),
             Optional('maxTrialNumPerGpu'): setType('maxTrialNumPerGpu', int),
             Optional('useActiveGpu'): setType('useActiveGpu', bool),
-            Optional('preCommand'): setType('preCommand', str)
+            Optional('pythonPath'): setType('pythonPath', str)
         },
         {
             'ip': setType('ip', str),
@@ -447,7 +447,7 @@ machine_list_schema = {
             Optional('gpuIndices'): Or(int, And(str, lambda x: len([int(i) for i in x.split(',')]) > 0), error='gpuIndex format error!'),
             Optional('maxTrialNumPerGpu'): setType('maxTrialNumPerGpu', int),
             Optional('useActiveGpu'): setType('useActiveGpu', bool),
-            Optional('preCommand'): setType('preCommand', str)
+            Optional('pythonPath'): setType('pythonPath', str)
         })]
 }
 
@@ -456,7 +456,6 @@ training_service_schema_dict = {
     'local': Schema({**common_schema, **common_trial_schema}),
     'remote': Schema({**common_schema, **common_trial_schema, **machine_list_schema, **remote_config_schema}),
     'pai': Schema({**common_schema, **pai_trial_schema, **pai_config_schema}),
-    'paiYarn': Schema({**common_schema, **pai_yarn_trial_schema, **pai_yarn_config_schema}),
     'kubeflow': Schema({**common_schema, **kubeflow_trial_schema, **kubeflow_config_schema}),
     'frameworkcontroller': Schema({**common_schema, **frameworkcontroller_trial_schema, **frameworkcontroller_config_schema}),
     'aml': Schema({**common_schema, **aml_trial_schema, **aml_config_schema}),
@@ -569,7 +568,7 @@ class NNIConfigSchema:
 
     def validate_pai_trial_conifg(self, experiment_config):
         '''validate the trial config in pai platform'''
-        if experiment_config.get('trainingServicePlatform') in ['pai', 'paiYarn']:
+        if experiment_config.get('trainingServicePlatform') in ['pai']:
             if experiment_config.get('trial').get('shmMB') and \
                     experiment_config['trial']['shmMB'] > experiment_config['trial']['memoryMB']:
                 raise SchemaError('shmMB should be no more than memoryMB!')
