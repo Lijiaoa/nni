@@ -687,31 +687,33 @@ class TableList extends React.Component<TableListProps, TableListState> {
 								text="Confirm search"
 								className="allList-advance gap-margin-left"
 								onClick={(): void => {
-                                    // let searchFilter = (_: TableObj): boolean => true; // eslint-disable-line no-unused-vars
 									// 根据是否check决定条件，根据超参名字确定数据类型，转换类型，条件连起来，筛选数据
 									// 如果同一个name进行多次filter，如果是不同的操作符，都是条件，相同的操作符，数据集取最大集
 									const relation = this.parametersType();
                                     console.info(relation.get('space/conv_size'));
-									const { searchItems } = this.state;
-                                    console.info(searchItems);
-                                    // let realfilter;
-									// searchItems.forEach(item => {
-									// 	if (item.isChecked && item.name !== '' && item.value !== '' && item.operator !== '') {
-									// 		if (relation.get(item.name) === 'number') {
-                                    //             item.value = JSON.parse(item.value);
-                                    //             // if(item.operator === '='){
-									// 			// 	const searchFilter = (trial): boolean =>
-									// 			// 		trial[item.name] === item.value
-
-                                    //             // }
-									// 			// return trials.filter(searchFilter);
-                                    //         }
-                                    //         realfilter.push(item);
-                                    //         console.info(realfilter);
-									// 	}
-									// });
-
-									this.setState({ isVisbleSearchCard: false });
+									const { searchItems, displayedItems } = this.state;
+                                    const que = searchItems.filter(item => item.isChecked === true && item.name !== '' && item.value !== '' && item.operator !== ''); // 待filter条件list
+                                    // 对 que 进行数据整合，调整成合适的数据，string->number
+                                    que.forEach(item => {
+                                        if(relation.get(item.name) === 'number'){
+                                            item.value = JSON.parse(item.value);
+                                        }
+                                    });
+                                    console.info('que', que);
+                                    // 先不考虑重名的筛选条件
+                                    let result = displayedItems;
+                                    que.forEach(temp => {
+                                        if(temp.operator === '='){
+                                            result = result.filter(trial => trial[temp.name] === temp.value);
+                                        }
+                                        if(temp.operator === '>'){
+                                            result = result.filter(trial => trial[temp.name] > temp.value);
+                                        }
+                                        if(temp.operator === '<'){
+                                            result = result.filter(trial => trial[temp.name] < temp.value);
+                                        }
+                                    });
+                                    this.setState(() => ({displayedItems: result, isVisbleSearchCard: false}));
 								}}
 							/>
 						</StackItem>
