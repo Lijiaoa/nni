@@ -28,6 +28,7 @@
 }
 
 .idCopy {
+<<<<<<< HEAD
 	.ms-Button--icon {
 		width: 18px;
 		height: 18px;
@@ -37,6 +38,17 @@
 	i {
 		color: #33333c;
 	}
+=======
+    .ms-Button--icon {
+        width: 18px;
+        height: 18px;
+        margin-left: 4px;
+    }
+
+    i {
+        color: #33333c;
+    }
+>>>>>>> 38c9a734cb90cdef8678d4fd44bf5140b34b5182
 }
 
 .ms-DetailsRow {
@@ -54,4 +66,10 @@
 
 .input-height {
 	height: 26px;
+}
+
+/* for graph tooltip style */
+.graph > div > div {
+    padding: 0 !important;
+    border: none !important;
 }
