@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { DetailsList, Dropdown, Icon, IDetailsListProps, IDropdownOption, IStackTokens, Stack } from '@fluentui/react';
+import { DetailsList, Dropdown, Icon, IDetailsListProps, IDropdownOption, IStackTokens, Stack, Selection } from '@fluentui/react';
 import ReactPaginate from 'react-paginate';
 
 interface PaginationTableState {
     itemsPerPage: number;
     currentPage: number;
     itemsOnPage: any[]; // this needs to be stored in state to prevent re-rendering
+    selectedRowIds: string[];
+}
+
+interface OOP extends IDetailsListProps{
+    selectedRowIds: string[];
 }
 
 const horizontalGapStackTokens: IStackTokens = {
@@ -26,14 +31,26 @@ function _obtainPaginationSlice(perPage: number, currentPage: number, source: an
     }
 }
 
-class PaginationTable extends React.PureComponent<IDetailsListProps, PaginationTableState> {
-    constructor(props: IDetailsListProps) {
+class PaginationTable extends React.PureComponent<OOP, PaginationTableState> {
+    private _selection: Selection;
+
+    constructor(props: OOP) {
         super(props);
         this.state = {
             itemsPerPage: 20,
             currentPage: 0,
-            itemsOnPage: []
+            itemsOnPage: [],
+            selectedRowIds: []
         };
+
+        this._selection = new Selection({
+            onSelectionChanged: (): void => {
+                console.info(this._selection.getSelection()); // eslint-disable-line
+                this.setState({
+                    selectedRowIds: this._selection.getSelection().map(s => (s as any).id)
+                });
+            }
+        });
     }
 
     private _onItemsPerPageSelect(event: React.FormEvent<HTMLDivElement>, item: IDropdownOption | undefined): void {

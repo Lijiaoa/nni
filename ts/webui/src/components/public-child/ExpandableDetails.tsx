@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DetailsRow, IDetailsRowBaseProps } from '@fluentui/react';
-import OpenRow from '../public-child/OpenRow';
+// import OpenRow from '../public-child/OpenRow';
 
 interface ExpandableDetailsProps {
     detailsProps: IDetailsRowBaseProps;
@@ -9,11 +9,12 @@ interface ExpandableDetailsProps {
 
 class ExpandableDetails extends React.Component<ExpandableDetailsProps, {}> {
     render(): React.ReactNode {
-        const { detailsProps, isExpand } = this.props;
+        const { detailsProps } = this.props;
+        // const { detailsProps, isExpand } = this.props;
         return (
             <div>
                 <DetailsRow {...detailsProps} />
-                {isExpand && <OpenRow trialId={detailsProps.item.id} />}
+                {/* {isExpand && <OpenRow trialId={detailsProps.item.id} />} */}
             </div>
         );
     }

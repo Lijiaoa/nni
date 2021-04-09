@@ -30,7 +30,7 @@ import ChangeColumnComponent from '../modals/ChangeColumnComponent';
 import Compare from '../modals/Compare';
 import Customize from '../modals/CustomizedTrial';
 import KillJob from '../modals/Killjob';
-import ExpandableDetails from '../public-child/ExpandableDetails';
+// import ExpandableDetails from '../public-child/ExpandableDetails';
 import PaginationTable from '../public-child/PaginationTable';
 import CopyButton from '../public-child/CopyButton';
 import { Trial } from '../../static/model/trial';
@@ -93,7 +93,7 @@ interface TableListState {
 }
 
 class TableList extends React.Component<TableListProps, TableListState> {
-    private _selection: Selection;
+    // private _selection: Selection;
     private _expandedTrialIds: Set<string>;
 
     constructor(props: TableListProps) {
@@ -111,19 +111,22 @@ class TableList extends React.Component<TableListProps, TableListState> {
             searchText: '',
             customizeColumnsDialogVisible: false,
             compareDialogVisible: false,
-            selectedRowIds: [],
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedRowIds:
+                localStorage.getItem('selectedIds') !== null ? JSON.parse(localStorage.getItem('selectedIds')!) : [],
             intermediateDialogTrial: undefined,
             copiedTrialId: undefined,
             sortInfo: { field: '', isDescend: true }
         };
 
-        this._selection = new Selection({
-            onSelectionChanged: (): void => {
-                this.setState({
-                    selectedRowIds: this._selection.getSelection().map(s => (s as any).id)
-                });
-            }
-        });
+        // this._selection = new Selection({
+        //     onSelectionChanged: (): void => {
+        //         console.info(this._selection.getSelection()); // eslint-disable-line
+        //         this.setState({
+        //             selectedRowIds: this._selection.getSelection().map(s => (s as any).id)
+        //         });
+        //     }
+        // });
 
         this._expandedTrialIds = new Set<string>();
     }
@@ -452,6 +455,18 @@ class TableList extends React.Component<TableListProps, TableListState> {
         );
     }
 
+    // private xxx = new Selection({
+    //     onSelectionChanged: (): void => {
+    //         console.info(this.xxx.getSelection()); // eslint-disable-line
+    //         console.info(localStorage.getItem('selectedIds')); // eslint-disable-line
+    //         const result = this.xxx.getSelection().map(s => (s as any).id);
+    //         localStorage.setItem('selectedIds', JSON.stringify(result));
+    //         this.setState({
+    //             selectedRowIds: result
+    //         });
+    //     }
+    // });
+
     componentDidUpdate(prevProps: TableListProps): void {
         if (this.props.tableSource !== prevProps.tableSource) {
             this._updateTableSource();
@@ -524,23 +539,23 @@ class TableList extends React.Component<TableListProps, TableListState> {
                         </Stack>
                     </StackItem>
                 </Stack>
-                {columns && displayedItems && (
-                    <PaginationTable
-                        columns={columns.filter(
-                            column =>
-                                displayedColumns.includes(column.key) || ['_expand', '_operation'].includes(column.key)
-                        )}
-                        items={displayedItems}
-                        compact={true}
-                        selection={this._selection}
-                        selectionMode={SelectionMode.multiple}
-                        selectionPreservedOnEmptyClick={true}
-                        onRenderRow={(props): any => {
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            return <ExpandableDetails detailsProps={props!} isExpand={props!.item._expandDetails} />;
-                        }}
-                    />
-                )}
+                {/* {columns && displayedItems && ( */}
+                <PaginationTable
+                    columns={columns.filter(
+                        column =>
+                            displayedColumns.includes(column.key) || ['_expand', '_operation'].includes(column.key)
+                    )}
+                    items={displayedItems}
+                    compact={true}
+                    selection={this.xxx}
+                    selectionMode={SelectionMode.multiple}
+                    selectionPreservedOnEmptyClick={true}
+                    // onRenderRow={(props): any => {
+                    //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    //     return <ExpandableDetails detailsProps={props!} isExpand={props!.item._expandDetails} />;
+                    // }}
+                />
+                {/* )} */}
                 {compareDialogVisible && (
                     <Compare
                         title='Compare trials'
