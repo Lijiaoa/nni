@@ -6,11 +6,6 @@ interface PaginationTableState {
     itemsPerPage: number;
     currentPage: number;
     itemsOnPage: any[]; // this needs to be stored in state to prevent re-rendering
-    selectedRowIds: string[];
-}
-
-interface OOP extends IDetailsListProps{
-    selectedRowIds: string[];
 }
 
 const horizontalGapStackTokens: IStackTokens = {
@@ -31,16 +26,15 @@ function _obtainPaginationSlice(perPage: number, currentPage: number, source: an
     }
 }
 
-class PaginationTable extends React.PureComponent<OOP, PaginationTableState> {
+class PaginationTable extends React.PureComponent<IDetailsListProps, PaginationTableState> {
     private _selection: Selection;
 
-    constructor(props: OOP) {
+    constructor(props: IDetailsListProps) {
         super(props);
         this.state = {
             itemsPerPage: 20,
             currentPage: 0,
-            itemsOnPage: [],
-            selectedRowIds: []
+            itemsOnPage: []
         };
 
         this._selection = new Selection({
