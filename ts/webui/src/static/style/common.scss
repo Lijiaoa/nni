@@ -1,3 +1,5 @@
+$themeBlue: #0071bc;
+
 .ellipsis {
 	overflow: hidden;
 	white-space: nowrap;
@@ -28,6 +30,7 @@
 }
 
 .idCopy {
+<<<<<<< HEAD
 	.ms-Button--icon {
 		width: 18px;
 		height: 18px;
@@ -37,6 +40,17 @@
 	i {
 		color: #33333c;
 	}
+=======
+    .ms-Button--icon {
+        width: 18px;
+        height: 18px;
+        margin-left: 4px;
+    }
+
+    i {
+        color: #33333c;
+    }
+>>>>>>> 08986c6b3ba7f6ea24b506c529e523a3ceb8b3d7
 }
 
 .ms-DetailsRow {
@@ -54,4 +68,33 @@
 
 .input-height {
 	height: 26px;
+}
+
+/* for graph tooltip style */
+.graph > div > div {
+    padding: 0 !important;
+    border: none !important;
+}
+
+.elementMarginLeft {
+    margin-left: 10px;
+}
+
+.operationBtn {
+    i {
+        color: $themeBlue;
+    }
+}
+
+/* for table row border */
+.ms-List-cell {
+    border-bottom: 1px solid #eeecea;
+}
+
+.line-height {
+    line-height: 30px;
+}
+
+.bold {
+    font-weight: bold;
 }
