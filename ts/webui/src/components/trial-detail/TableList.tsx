@@ -75,6 +75,14 @@ function _inferColumnTitle(columnKey: string): string {
     }
 }
 
+interface SearchItems {
+	id: number;
+	isChecked: boolean;
+	name: string;
+	operator: string;
+	value: string; // 先按string
+}
+
 interface TableListProps {
     tableSource: TableObj[];
     trialsUpdateBroadcast: number;
@@ -92,6 +100,7 @@ interface TableListState {
     intermediateDialogTrial: TableObj | undefined;
     copiedTrialId: string | undefined;
     sortInfo: SortInfo;
+    searchItems: Array<SearchItems>;
 }
 
 class TableList extends React.Component<TableListProps, TableListState> {
@@ -116,7 +125,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
             selectedRowIds: [],
             intermediateDialogTrial: undefined,
             copiedTrialId: undefined,
-            sortInfo: { field: '', isDescend: true }
+            sortInfo: { field: '', isDescend: true },
+            searchItems: []
         };
 
         this._selection = new Selection({
@@ -454,6 +464,19 @@ class TableList extends React.Component<TableListProps, TableListState> {
         );
     }
 
+    private parametersType = (): Map<string, string | number> => {
+		const { displayedItems } = this.state;
+		// 抽出space名字
+		const map = new Map();
+		if (displayedItems.length !== 0) {
+			const allSearchSpaceColumn = Object.keys(displayedItems[0]).filter(item => item.startsWith('space/'));
+			allSearchSpaceColumn.forEach(item => {
+				map.set(item, typeof displayedItems[0][item]);
+			});
+		}
+		return map;
+	};
+
     componentDidUpdate(prevProps: TableListProps): void {
         if (this.props.tableSource !== prevProps.tableSource) {
             this._updateTableSource();
@@ -474,9 +497,15 @@ class TableList extends React.Component<TableListProps, TableListState> {
             displayedColumns,
             selectedRowIds,
             intermediateDialogTrial,
-            copiedTrialId
+            copiedTrialId,
+            searchItems
         } = this.state;
 
+        // 抽出 space name
+        const allSearchSpaceColumn =
+			displayedItems.length !== 0
+				? Object.keys(displayedItems[0]!).filter(item => item.startsWith('space/'))
+				: [];
         return (
             <div id='tableList'>
                 <Stack horizontal className='panelTitle' style={{ marginTop: 10 }}>
@@ -513,20 +542,181 @@ class TableList extends React.Component<TableListProps, TableListState> {
                                 onChange={this._updateSearchFilterType.bind(this)}
                                 styles={{ root: { width: 150 } }}
                             />
-                            <input
-                                type='text'
-                                className='allList-search-input'
-                                placeholder={`Search by ${
-                                    ['id', 'trialnum'].includes(searchType)
-                                        ? searchOptionLiterals[searchType]
-                                        : searchType
-                                }`}
-                                onChange={this._updateSearchText.bind(this)}
-                                style={{ width: 230 }}
-                            />
+                            <Stack horizontal horizontalAlign="end" className="allList">
+							<input
+								type="text"
+								className="allList-search-input"
+								placeholder="Find matching trials"
+								onChange={this._updateSearchText.bind(this)}
+								style={{ width: 230 }}
+							/>
+							<DefaultButton
+								text="Advanced search"
+								className="allList-advance"
+								onClick={(): void => {
+                                    console.info('ccc');
+									// this.setState({ isVisbleSearchCard: true });
+								}}
+							/>
+						</Stack>
                         </Stack>
                     </StackItem>
                 </Stack>
+                {/* advanced search */}
+                <div className={`search-card ${!isVisbleSearchCard ? 'search-card-hidden' : ''}`}>
+					{searchItems.map(item => {
+						return (
+							<Stack key={`${item.id} ui`} horizontal className="search-row gap-margin-bottom">
+								<Checkbox
+									className="checkbox"
+									checked={item.isChecked}
+									onChange={(ev, checked): void => {
+										const { searchItems } = this.state;
+										const result = [
+											...searchItems.slice(0, item.id),
+											{ ...searchItems[item.id], isChecked: !!checked },
+											...searchItems.slice(item.id + 1)
+										];
+										this.setState({ searchItems: result });
+									}}
+								/>
+								<Dropdown
+									options={allSearchSpaceColumn.map(index => ({
+										key: index,
+										text: index
+									}))}
+									key={`${item.id} first`.toString()}
+									selectedKey={item.name}
+									onChange={(_ev, some): void => {
+										const { searchItems } = this.state;
+										const result = [
+											...searchItems.slice(0, item.id),
+											{ ...searchItems[item.id], name: some!.text },
+											...searchItems.slice(item.id + 1)
+										];
+										this.setState({ searchItems: result });
+									}}
+									styles={{ root: { width: 180 } }}
+									className="gap-margin-left"
+								/>
+								<Dropdown
+									options={[ '>', '=', '<' ].map(index => ({
+										key: index,
+										text: index
+									}))}
+									key={item.id}
+									selectedKey={item.operator}
+									className="gap-margin-left"
+									onChange={(_ev, some): void => {
+										const { searchItems } = this.state;
+										const result = [
+											...searchItems.slice(0, item.id),
+											{ ...searchItems[item.id], operator: some!.text },
+											...searchItems.slice(item.id + 1)
+										];
+										this.setState({ searchItems: result });
+									}}
+									styles={{ root: { width: 80 } }}
+								/>
+								<input
+									type="text"
+									name={`${item.id} input`}
+									defaultValue={item.value}
+									className="input-height gap-margin-left"
+									onChange={(event): void => {
+										const { value } = event.target;
+										const { searchItems } = this.state;
+										const result = [
+											...searchItems.slice(0, item.id),
+											{ ...searchItems[item.id], value: value },
+											...searchItems.slice(item.id + 1)
+										];
+										this.setState({ searchItems: result });
+									}}
+								/>
+								<span
+									className="del-search cursor gap-margin-left"
+									onClick={(): void => {
+										const { searchItems } = this.state;
+										if (searchItems.length === 1) {
+											this.setState({ searchItems: [] });
+										} else {
+											this.setState({
+												searchItems: [
+													...searchItems.slice(0, item.id),
+													...searchItems.slice(item.id + 1)
+												]
+											});
+										}
+									}}
+								>
+									{Cancel}
+								</span>
+							</Stack>
+						);
+					})}
+					<Stack horizontal className="advanced-btns">
+						<StackItem grow={50}>
+							<CommandBarButton
+								iconProps={{ iconName: 'Add' }}
+								text="Add filter"
+								className="allList-advance"
+								onClick={(): void => {
+									const { searchItems } = this.state;
+									let index;
+									if (searchItems.length === 0) {
+										index = 0;
+									} else {
+										index = searchItems[searchItems.length - 1].id + 1;
+									}
+									this.setState({
+										searchItems: [
+											...searchItems,
+											{ id: index, isChecked: false, name: '', value: '', operator: '' }
+										]
+									});
+									console.info(searchItems);
+								}}
+							/>
+						</StackItem>
+						<StackItem grow={50}>
+							<DefaultButton
+								text="Confirm search"
+								className="allList-advance gap-margin-left"
+								onClick={(): void => {
+									// 根据是否check决定条件，根据超参名字确定数据类型，转换类型，条件连起来，筛选数据
+									// 如果同一个name进行多次filter，如果是不同的操作符，都是条件，相同的操作符，数据集取最大集
+									const relation = this.parametersType();
+                                    console.info(relation.get('space/conv_size'));
+									const { searchItems, displayedItems } = this.state;
+                                    const que = searchItems.filter(item => item.isChecked === true && item.name !== '' && item.value !== '' && item.operator !== ''); // 待filter条件list
+                                    // 对 que 进行数据整合，调整成合适的数据，string->number
+                                    que.forEach(item => {
+                                        if(relation.get(item.name) === 'number'){
+                                            item.value = JSON.parse(item.value);
+                                        }
+                                    });
+                                    console.info('que', que);
+                                    // 先不考虑重名的筛选条件
+                                    let result = displayedItems;
+                                    que.forEach(temp => {
+                                        if(temp.operator === '='){
+                                            result = result.filter(trial => trial[temp.name] === temp.value);
+                                        }
+                                        if(temp.operator === '>'){
+                                            result = result.filter(trial => trial[temp.name] > temp.value);
+                                        }
+                                        if(temp.operator === '<'){
+                                            result = result.filter(trial => trial[temp.name] < temp.value);
+                                        }
+                                    });
+                                    this.setState(() => ({displayedItems: result, isVisbleSearchCard: false}));
+								}}
+							/>
+						</StackItem>
+					</Stack>
+				</div>
+
                 {columns && displayedItems && (
                     <PaginationTable
                         columns={columns.filter(
