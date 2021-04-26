@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
-import { Dropdown } from '@fluentui/react';
+import { Dropdown, TooltipHost } from '@fluentui/react';
 import { EXPERIMENT } from '../../../static/datamodel';
 import { AppContext } from '../../../App';
 import { EditExpeParamContext } from './context';
 import { durationUnit } from '../overviewConst';
-import { MANAGER_IP, MAX_TRIAL_NUMBERS } from '../../../static/const';
+import { MANAGER_IP, MAX_TRIAL_NUMBERS, CONCURRENCYTOOLTIP } from '../../../static/const';
 import { Edit, CheckMark, Cancel } from '../../buttons/Icon';
 import MessageInfo from '../../modals/MessageInfo';
 import '../../../static/style/overview/count.scss';
@@ -171,7 +171,16 @@ export const EditExperimentParam = (): any => {
                             return (
                                 <React.Fragment>
                                     <div className={`${editClassName} editparam`}>
+                                        {
+                                        value.field === 'trialConcurrency'
+                                        ?
+                                        <TooltipHost content={CONCURRENCYTOOLTIP}>
+                                            <div className='title'>{value.title}</div>                        
+                                            {/* <p className="cursor">Concurrency<span className="progress-info">{infoIcon}</span></p> */}
+                                        </TooltipHost>
+                                        :
                                         <div className='title'>{value.title}</div>
+                                        }
                                         <input
                                             className={`${value.field} editparam-Input`}
                                             ref={DurationInputRef}
