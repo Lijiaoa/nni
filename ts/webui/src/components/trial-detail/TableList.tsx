@@ -11,7 +11,9 @@ import {
     Stack,
     StackItem,
     TooltipHost,
-    DirectionalHint
+    DirectionalHint,
+    CommandBarButton,
+    Checkbox
 } from '@fluentui/react';
 import { EXPERIMENT, TRIALS } from '../../static/datamodel';
 import { TOOLTIP_BACKGROUND_COLOR } from '../../static/const';
@@ -650,7 +652,7 @@ class TableList extends React.Component<TableListProps, TableListState> {
 										}
 									}}
 								>
-									{Cancel}
+									取消
 								</span>
 							</Stack>
 						);
