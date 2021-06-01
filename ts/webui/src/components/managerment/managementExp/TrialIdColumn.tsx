@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Stack } from '@fluentui/react';
-import CopyButton from '../public-child/CopyButton';
+import CopyButton from '../../public-child/CopyButton';
 
 interface TrialIdColumnProps {
     port: number;

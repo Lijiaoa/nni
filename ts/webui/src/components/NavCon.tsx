@@ -149,6 +149,12 @@ class NavCon extends React.Component<NavProps, NavState> {
                                     {ChevronRightMed}
                                 </div>
                             </Link>
+                            <Link to='/project' className='experiment'>
+                                <div className='expNavTitle'>
+                                    <span>Project</span>
+                                    {ChevronRightMed}
+                                </div>
+                            </Link>
                         </Stack>
                     </StackItem>
                     {isvisibleExperimentDrawer && (
