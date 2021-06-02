@@ -56,8 +56,8 @@ function getDropdownOptions(parameter): any {
 // change origin data according to parameter type, string -> number
 const convertParametersValue = (searchItems: SearchItems[], relation: Map<string, string>): SearchItems[] => {
     const choice: any[] = [];
-
-    searchItems.forEach(item => {
+    const copyItems = JSON.parse(JSON.stringify(searchItems));
+    copyItems.forEach(item => {
         if (relation.get(item.name) === 'number') {
             if (item.isChoice === true) {
                 item.choice.forEach(ele => {
@@ -73,7 +73,7 @@ const convertParametersValue = (searchItems: SearchItems[], relation: Map<string
         }
     });
 
-    return searchItems;
+    return copyItems;
 };
 // relation: trial parameter -> type {conv_size -> number}
 const getTrialsBySearchFilters = (
@@ -169,7 +169,7 @@ function getSearchInputValueBySearchList(searchFilter): string {
             str = str + `${filterName}${item.operator === '=' ? ':' : '≠'}[${[...item.choice]}]; `;
         }
     });
-
+    console.info(str); // eslint-disable-line
     return str;
 }
 

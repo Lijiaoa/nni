@@ -105,9 +105,9 @@ function Search(props): any {
     }
 
     // update TableList page
-    function changeTableListPage(searchFilterList: Array<SearchItems>): void {
-        changeSearchFilterList(searchFilterList);
-        updatePage();
+    async function changeTableListPage(cc: Array<SearchItems>): Promise<void> {
+        changeSearchFilterList(cc);
+        await updatePage();
     }
 
     // "[hello, world]", JSON.parse(it) doesn't work so write this function
@@ -134,7 +134,7 @@ function Search(props): any {
     }
 
     // SearchBox onSearch event: Filter based on the filter criteria entered by the user
-    function startFilter(): void {
+    async function startFilter(): Promise<void> {
         const regEn = /`~!@#$%^&*()+?"{}.'/im;
         const regCn = /·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
         if (regEn.test(searchInputVal) || regCn.test(searchInputVal)) {
@@ -153,7 +153,8 @@ function Search(props): any {
             );
         }
 
-        allFilterConditions.forEach(eachFilterConditionStr => {
+        // batch_size:[1,4]; hidden_size:[124]; 
+        await allFilterConditions.forEach(eachFilterConditionStr => {
             let eachFilterConditionArr: string[] = [];
 
             // EXPERIMENT.searchSpace[parameter]._type === 'choice'
@@ -189,6 +190,8 @@ function Search(props): any {
                 const isArray =
                     eachFilterConditionArr.length > 1 && eachFilterConditionArr[1].includes('[' || ']') ? true : false;
                 if (isArray === true) {
+                    console.info('----------------'); // eslint-disable-line
+                    console.info(convertStringArrToList(eachFilterConditionArr[1])); // eslint-disable-line
                     if (isChoicesType === true) {
                         // status:[SUCCEEDED]
                         newSearchFilter.push({
@@ -222,7 +225,25 @@ function Search(props): any {
                 }
             }
         });
-
+        // abc = [
+        //     {
+        //         name: 'conv_size',
+        //         operator: '=',
+        //         value1: '',
+        //         value2: '',
+        //         choice: ['4', '8'],
+        //         isChoice: true
+        //     },
+        //     {
+        //         name: 'hidden_size',
+        //         operator: '=',
+        //         value1: '',
+        //         value2: '',
+        //         choice: ['124'],
+        //         isChoice: true
+        //     }
+        // ];
+        console.info('conver', newSearchFilter); // eslint-disable-line
         changeTableListPage(newSearchFilter);
     }
 

@@ -405,6 +405,8 @@ class TableList extends React.Component<TableListProps, TableListState> {
         let items = this._trialsToTableItems(this.props.tableSource);
         if (searchItems.length > 0) {
             items = getTrialsBySearchFilters(items, searchItems, relation); // use search filter to filter data
+            console.info('表格更新'); // eslint-disable-line
+            console.info(searchItems); // eslint-disable-line
         }
         if (items.length > 0) {
             const columns = this._buildColumnsFromTableItems(items);
@@ -463,7 +465,9 @@ class TableList extends React.Component<TableListProps, TableListState> {
         );
     }
 
-    private changeSearchFilterList = (arr: Array<SearchItems>): void => {
+    // async changeSearchFilterList = (arr: Array<SearchItems>): Promise<void> => {
+    private changeSearchFilterList = async (arr: Array<SearchItems>): Promise<void> => {
+        // async componentDidMount(): Promise<void> {
         this.setState(() => ({
             searchItems: arr
         }));

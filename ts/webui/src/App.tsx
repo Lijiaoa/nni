@@ -135,7 +135,7 @@ class App extends React.Component<{}, AppState> {
         }));
     };
 
-    updateDetailPage = (): void => {
+    private updateDetailPage = async (): Promise<void> => {
         this.setState(state => ({
             trialsUpdateBroadcast: state.trialsUpdateBroadcast + 1
         }));

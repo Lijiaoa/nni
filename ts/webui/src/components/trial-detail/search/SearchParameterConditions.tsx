@@ -8,7 +8,7 @@ import { searchConditonsGap } from '../../modals/ChildrenGap';
 // This file is for filtering trial parameters and trial status
 
 function SearchParameterConditions(props): any {
-    const { parameter, searchFilter, dismiss, changeSearchFilterList, updatePage, setSearchInputVal } = props;
+    const { parameter, searchFilter, changeSearchFilterList, updatePage, dismiss, setSearchInputVal } = props;
     const isChoiceTypeSearchFilter = parameter === 'StatusNNI' || EXPERIMENT.searchSpace[parameter]._type === 'choice';
     const operatorList = isChoiceTypeSearchFilter ? ['=', '≠'] : ['between', '>', '<', '=', '≠'];
 
@@ -77,8 +77,7 @@ function SearchParameterConditions(props): any {
         return secondInputVal as string;
     }
 
-    // click Apply button
-    function startFilterTrials(): void {
+    async function startFilterTrials(): Promise<void> {
         if (isChoiceTypeSearchFilter === false) {
             if (firstInputVal === '') {
                 alert('Please input related value!');
@@ -93,7 +92,7 @@ function SearchParameterConditions(props): any {
 
         let newSearchFilters = JSON.parse(JSON.stringify(searchFilter));
         const find = newSearchFilters.filter(ele => ele.name === parameter);
-
+        console.info(choiceList); // eslint-disable-line
         if (find.length > 0) {
             // if user clear all selected options, will clear this filter condition on the searchFilter list
             // eg: conv_size -> choiceList = [], searchFilter will remove (name === 'conv_size')
@@ -122,10 +121,11 @@ function SearchParameterConditions(props): any {
                 });
             }
         }
-
+        console.info(newSearchFilters); // eslint-disable-line
         setSearchInputVal(getSearchInputValueBySearchList(newSearchFilters));
-        changeSearchFilterList(newSearchFilters);
-        updatePage();
+        await changeSearchFilterList(newSearchFilters);
+        await updatePage();
+        setChoiceList([]);
         dismiss(); // close menu
     }
 
