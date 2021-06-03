@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { getPrefix } from './static/function';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 const Overview = lazy(() => import('./components/Overview'));
 const TrialsDetail = lazy(() => import('./components/TrialsDetail'));
 const Experiment = lazy(() => import('./components/managementExp/ExperimentManager'));
@@ -24,9 +24,9 @@ ReactDOM.render(
             <Route path='/experiment' component={Experiment} exact />
             <Switch>
                 <App>
-                    <Route path='/' component={Overview} exact />
-                    <Route path='/oview' component={Overview} />
-                    <Route path='/detail' component={TrialsDetail} />
+                    <Route path='/oview' component={Overview} exact />
+                    <Route path='/detail' component={TrialsDetail} exact />
+                    <Redirect to='/oview' from='/' component={Overview} exact />
                 </App>
             </Switch>
         </Suspense>
