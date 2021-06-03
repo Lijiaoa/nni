@@ -11,12 +11,12 @@ import NameColumn from './TrialIdColumn';
 import FilterBtns from './FilterBtns';
 import { TitleContext } from '../../overview/TitleContext';
 import { Title } from '../../overview/Title';
-import '../../App.scss';
-import '../../static/style/common.scss';
-import '../../static/style/nav/nav.scss';
-import '../../static/style/experiment/experiment.scss';
-import '../../static/style/overview/probar.scss';
-import '../../static/style/tableStatus.css';
+import '../../../App.scss';
+import '../../../static/style/common.scss';
+import '../../../static/style/nav/nav.scss';
+import '../../../static/style/experiment/experiment.scss';
+import '../../../static/style/overview/probar.scss';
+import '../../../static/style/tableStatus.css';
 
 const expTokens: IStackTokens = {
     childrenGap: 25

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { IColumn, DetailsList, Selection } from '@fluentui/react';
 import NameColumn from './managementExp/TrialIdColumn';
 import { expformatTimestamp } from '../../static/function';
@@ -8,7 +9,7 @@ function ExperimentsList(props){
 
     const { source } = props;
     const [selectedIds, setSelectedIds] = useState([] as number[]); // 假设 project id 是 number 类型
-
+    console.info(selectedIds);
     const columns: IColumn[] = [
         {
             name: 'Name',
@@ -103,5 +104,9 @@ function ExperimentsList(props){
         />
     );
 }
+
+ExperimentsList.propTypes = {
+    source: PropTypes.array
+};
 
 export default ExperimentsList;

@@ -5,7 +5,7 @@ const METRIC_GROUP_UPDATE_THRESHOLD = 100;
 const METRIC_GROUP_UPDATE_SIZE = 20;
 
 const prefix = getPrefix();
-const RESTAPI = '/api/v1/nni';
+const RESTAPI = 'http://13.77.78.63:8080/api/v1/nni';
 const MANAGER_IP = prefix === undefined ? RESTAPI : `${prefix}${RESTAPI}`;
 const DOWNLOAD_IP = `/logs`;
 

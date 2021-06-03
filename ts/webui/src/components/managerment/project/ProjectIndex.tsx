@@ -17,13 +17,13 @@ function ProjectIndex(): any {
     const columns: IColumn[] = [
         {
             name: 'Name',
-            key: 'project_name',
-            fieldName: 'project_name', // required!
+            key: 'projectName',
+            fieldName: 'projectName', // required!
             minWidth: 60,
             maxWidth: 80,
             isResizable: true,
             data: 'string',
-            onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.project_name}</div>
+            onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.projectName}</div>
         },
         {
             name: 'Experiments',
@@ -46,16 +46,16 @@ function ProjectIndex(): any {
             onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.description}</div>
         },
         {
-            name: 'Created_time',
-            key: 'create_time',
-            fieldName: 'create_time',
+            name: 'CreatedTime',
+            key: 'createTime',
+            fieldName: 'createTime',
             minWidth: 70,
             maxWidth: 120,
             isResizable: true,
             data: 'number',
             onRender: (item: any): React.ReactNode => (
                 <div className='durationsty succeed-padding'>
-                    <div>{convertDuration(item.create_time)}</div>
+                    <div>{convertDuration(item.createTime)}</div>
                 </div>
             )
         }
@@ -66,7 +66,7 @@ function ProjectIndex(): any {
 
         if (deleteProjectIds !== undefined ) {
             deleteProjectIds.forEach(item => {
-                result = tableSource.filter(item => item.project_id.toString() !== item.toString());
+                result = tableSource.filter(ele => ele.projectId.toString() !== item.toString());
             });
         }
 
@@ -92,7 +92,7 @@ function ProjectIndex(): any {
                             <TitleContext.Provider value={{ text: 'All project', icon: 'CustomList' }}>
                                 <Title />
                             </TitleContext.Provider>
-                            <Stack className='box' horizontal>
+                            <Stack className='box'>
                                 <div className='search'>
                                     <SearchBox
                                         className='search-input'
@@ -102,7 +102,7 @@ function ProjectIndex(): any {
                                         // onChange={this.searchNameAndId.bind(this)}
                                     />
                                 </div>
-                                <Stack horizontal>
+                                <Stack horizontalAlign="space-between">
                                     <DefaultButton
                                         onClick={newProject}
                                         text='New project'
@@ -136,7 +136,7 @@ function ProjectIndex(): any {
                     </Stack>
                 </Stack>
                 {/* new project modal */}
-                <NewProjectModal visible={visible} source={tableSource} updateTableSource={setTableSource}/>
+                <NewProjectModal visible={visible} updateTableSource={setTableSource}/>
             </Stack>
     );
 }

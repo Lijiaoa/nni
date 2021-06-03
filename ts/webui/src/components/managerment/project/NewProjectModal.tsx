@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { Stack, TextField, PrimaryButton, DefaultButton } from '@fluentui/react';
+import PropTypes from 'prop-types';
+import { Stack, TextField, DefaultButton } from '@fluentui/react';
 import { ExperimentsManager } from '../../../static/model/experimentsManager';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
-import { errorBadge, completed } from '../../buttons/Icon';
+// import { errorBadge, completed } from '../../buttons/Icon';
 import ExperimentsList from '../ExperimentList';
 
-async function NewProjectModal(props): Promise<Element> {
-    const { visible, source, updateTableSource } = props;
+function NewProjectModal(props): JSX.Element {
+    const { visible, updateTableSource } = props;
     const [firstTextFieldValue, setFirstTextFieldValue] = useState('');
 
     const onChangeFirstTextFieldValue = useCallback(
@@ -17,14 +18,14 @@ async function NewProjectModal(props): Promise<Element> {
     );
 
     const EXPERIMENTMANAGER = new ExperimentsManager();
-    await EXPERIMENTMANAGER.init();
+    EXPERIMENTMANAGER.init();
     const result = EXPERIMENTMANAGER.getExperimentList();
 
     // 点 save btn 之后，吧数据加进页面
     function newProjectFunction() {
         //  拿到name,description,experimentlist
         console.info('log');
-        const a = '新加的数据对象';
+        // const a = '新加的数据对象';
         // 拼接上 source
         updateTableSource();
     }
@@ -35,8 +36,7 @@ async function NewProjectModal(props): Promise<Element> {
                 hidden={!visible} // required field!
                 dialogContentProps={{
                     type: DialogType.largeHeader,
-                    title: 'Customized trial setting',
-                    subText: 'You can submit a customized trial.'
+                    title: 'New project'
                 }}
                 modalProps={{
                     isBlocking: false,
@@ -66,7 +66,7 @@ async function NewProjectModal(props): Promise<Element> {
             </Dialog>
 
             {/* clone: prompt succeed or failed */}
-            <Dialog
+            {/* <Dialog
                 hidden={!isShowSubmitSucceed}
                 onDismiss={this.closeSucceedHint}
                 dialogContentProps={{
@@ -107,9 +107,15 @@ async function NewProjectModal(props): Promise<Element> {
                 <DialogFooter>
                     <PrimaryButton onClick={this.closeFailedHint} text='OK' />
                 </DialogFooter>
-            </Dialog>
+            </Dialog> */}
 
         </Stack>
     );
 }
+
+NewProjectModal.propTypes = {
+    visible: PropTypes.bool,
+    updateTableSource: PropTypes.func
+};
+
 export default NewProjectModal;
