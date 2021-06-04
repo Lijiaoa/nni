@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Stack, StackItem, CommandBarButton } from '@fluentui/react';
-import { RevToggleKey } from '../../buttons/Icon';
-import { NNILOGO } from '../../stateless-component/NNItabs';
-import { stackTokens, stackStyle } from '../../NavConst';
+import { RevToggleKey } from '../buttons/Icon';
+import { NNILOGO } from '../stateless-component/NNItabs';
+import { stackTokens, stackStyle } from './NavConst';
 
-export const Hearder = (): any => (
+const Hearder = (): any => (
     <div className='header'>
         <div className='headerCon'>
             <Stack className='nav' horizontal>
@@ -24,3 +24,5 @@ export const Hearder = (): any => (
         </div>
     </div>
 );
+
+export default Hearder;

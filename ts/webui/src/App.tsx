@@ -3,7 +3,7 @@ import { Stack } from '@fluentui/react';
 import { COLUMN } from './static/const';
 import { EXPERIMENT, TRIALS } from './static/datamodel';
 import { isManagerExperimentPage } from './static/function';
-import NavCon from './components/NavCon';
+import NavCon from './components/nav/NavCon';
 import MessageInfo from './components/modals/MessageInfo';
 import { SlideNavBtns } from './components/slideNav/SlideNavBtns';
 const echarts = require('echarts/lib/echarts');

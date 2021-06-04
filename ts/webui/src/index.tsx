@@ -22,8 +22,6 @@ ReactDOM.render(
                 </div>
             }
         >
-            <Route path='/experiment' component={Experiment} exact />
-            <Route path='/project' component={Project} exact />
             <Switch>
                 <App>
                     <Route path='/' component={Overview} exact />
@@ -31,6 +29,8 @@ ReactDOM.render(
                     <Route path='/detail' component={TrialsDetail} />
                 </App>
             </Switch>
+            <Route path='/experiment' component={Experiment} exact />
+            <Route path='/project' component={Project} exact/>
         </Suspense>
     </Router>,
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Stack, SearchBox, DefaultButton, DetailsList, IColumn, Selection } from '@fluentui/react';
-import { Hearder } from '../managementExp/Header';
+import { Stack, StackItem, SearchBox, DefaultButton, DetailsList, IColumn, Selection } from '@fluentui/react';
+import Hearder from '../../nav/Header';
 import { TitleContext } from '../../overview/TitleContext';
 import { Title } from '../../overview/Title';
 import NewProjectModal from './NewProjectModal';
@@ -103,14 +103,18 @@ function ProjectIndex(): any {
                                     />
                                 </div>
                                 <Stack horizontalAlign="space-between">
-                                    <DefaultButton
-                                        onClick={newProject}
-                                        text='New project'
-                                    />
-                                    <DefaultButton
-                                        onClick={deleteProject}
-                                        text='Delete'
-                                    />
+                                    <StackItem grow={50}>
+                                        <DefaultButton
+                                            onClick={newProject}
+                                            text='New project'
+                                        />
+                                    </StackItem>
+                                    <StackItem grow={50}>
+                                        <DefaultButton
+                                            onClick={deleteProject}
+                                            text='Delete'
+                                        />
+                                    </StackItem>
                                 </Stack>
                                 {/* project list */}
                                 <Stack>

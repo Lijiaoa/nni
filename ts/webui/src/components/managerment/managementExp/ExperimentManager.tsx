@@ -6,7 +6,7 @@ import { AllExperimentList, SortInfo } from '../../../static/interface';
 import MessageInfo from '../../modals/MessageInfo';
 import { compareDate, filterByStatusOrPlatform, getSortedSource } from './expFunction';
 import { MAXSCREENCOLUMNWIDHT, MINSCREENCOLUMNWIDHT } from './experimentConst';
-import { Hearder } from './Header';
+import Hearder from '../../nav/Header';
 import NameColumn from './TrialIdColumn';
 import FilterBtns from './FilterBtns';
 import { TitleContext } from '../../overview/TitleContext';
