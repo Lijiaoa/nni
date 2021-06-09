@@ -304,6 +304,9 @@ You can use these commands to get more information about the experiment
 <div>test px</div>
 <img src="docs/static/img/test.gif" alt="webui" width="100%"/>
 
+<div>other gif</div>
+<img src="docs/static/img/webui-img/loading.gif" alt="webui" width="100%"/>
+
 ## **Releases and Contributing**
 NNI has a monthly release cycle (major releases). Please let us know if you encounter a bug by [filling an issue](https://github.com/microsoft/nni/issues/new/choose).
 
