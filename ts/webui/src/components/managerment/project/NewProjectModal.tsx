@@ -1,33 +1,63 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Stack, TextField, DefaultButton } from '@fluentui/react';
-import { ExperimentsManager } from '../../../static/model/experimentsManager';
+import { Stack, TextField, PrimaryButton, IStackTokens } from '@fluentui/react';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 // import { errorBadge, completed } from '../../buttons/Icon';
 import ExperimentsList from '../ExperimentList';
+import {exp} from './experiment'; // 实验列表
+
+const projectTokens: IStackTokens = {
+    childrenGap: 18
+};
 
 function NewProjectModal(props): JSX.Element {
-    const { visible, updateTableSource } = props;
-    const [firstTextFieldValue, setFirstTextFieldValue] = useState('');
-
+    const { visible, tableSource, closeModel, updateTableSource } = props;
+    const [firstTextFieldValue, setFirstTextFieldValue] = useState(''); // project name
+    const [description, setDescription] = useState(''); // description value
+    const [chooseTrials, setChooseTrials] = useState([] as string[]);
+    const [expListString, setExpListString] = useState(chooseTrials.join(','));
+    function choseTrials(val: string[]): void{
+        setChooseTrials(val);
+    }
+    console.info(setExpListString);
     const onChangeFirstTextFieldValue = useCallback(
         (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
             setFirstTextFieldValue(newValue || '');
         },
         [],
     );
-
-    const EXPERIMENTMANAGER = new ExperimentsManager();
-    EXPERIMENTMANAGER.init();
-    const result = EXPERIMENTMANAGER.getExperimentList();
+    const onChangeDescriptionValue = useCallback(
+        (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setDescription(newValue || '');
+        },
+        [],
+    );
 
     // 点 save btn 之后，吧数据加进页面
-    function newProjectFunction() {
+    function newProjectFunction(): void {
         //  拿到name,description,experimentlist
-        console.info('log');
+        console.info(firstTextFieldValue);
+        console.info(description);
+        console.info(chooseTrials.join(','));
+        tableSource.push({
+            projectId: 4,
+            projectName: firstTextFieldValue,
+            experiments: chooseTrials,
+            description: description,
+            labels: [],
+            createTime: +new Date()
+        });
+        updateTableSource(tableSource);
+        // 清空之前的选择
+        setFirstTextFieldValue('');
+        setDescription('');
+        setChooseTrials([]);
+        setExpListString('');
+
+        closeModel();
         // const a = '新加的数据对象';
         // 拼接上 source
-        updateTableSource();
+        // updateTableSource();
     }
 
     return (
@@ -38,30 +68,40 @@ function NewProjectModal(props): JSX.Element {
                     type: DialogType.largeHeader,
                     title: 'New project'
                 }}
-                modalProps={{
-                    isBlocking: false,
-                    styles: { main: { maxWidth: 450 } }
-                }}
+                // modalProps={{
+                //     isBlocking: false,
+                //     styles: { main: { minWidth: '60%' } }
+                // }}
+                minWidth='35%'
             >
+                <Stack tokens={projectTokens}>
+
                 <TextField
                     label='New project'
                     value={firstTextFieldValue}
                     onChange={onChangeFirstTextFieldValue}
-                // styles={textFieldStyles}
+                    // styles={textFieldStyles}
+                    />
+                <TextField
+                    label='Description(optional)'
+                    multiline
+                    autoAdjustHeight
+                    value={description}
+                    onChange={onChangeDescriptionValue}
                 />
-                <TextField label='Description(optional)' multiline autoAdjustHeight />
                 <TextField
                     label='Experiments'
-                    value={firstTextFieldValue}
-                    onChange={onChangeFirstTextFieldValue}
+                    value={expListString}
+                    // onChange={onChangeE}
                 // styles={textFieldStyles}
                 />
                 {/* experiment list */}
                 {/* 这个source 是实验们的集合 */}
-                <ExperimentsList source={result} />
+                <ExperimentsList source={exp}  changeChooseTrials={choseTrials} setExpListString={setExpListString}/>
+                </Stack>
                 <DialogFooter>
                     {/* <PrimaryButton text='Submit' onClick={this.addNewTrial} /> */}
-                    <DefaultButton text='Save' onClick={newProjectFunction} />
+                    <PrimaryButton text='Save' onClick={newProjectFunction} />
                 </DialogFooter>
             </Dialog>
 
@@ -115,6 +155,8 @@ function NewProjectModal(props): JSX.Element {
 
 NewProjectModal.propTypes = {
     visible: PropTypes.bool,
+    tableSource: PropTypes.array,
+    closeModel: PropTypes.func,
     updateTableSource: PropTypes.func
 };
 

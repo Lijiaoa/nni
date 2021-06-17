@@ -6,7 +6,6 @@ import { AllExperimentList, SortInfo } from '../../../static/interface';
 import MessageInfo from '../../modals/MessageInfo';
 import { compareDate, filterByStatusOrPlatform, getSortedSource } from './expFunction';
 import { MAXSCREENCOLUMNWIDHT, MINSCREENCOLUMNWIDHT } from './experimentConst';
-import Hearder from '../../nav/Header';
 import NameColumn from './TrialIdColumn';
 import FilterBtns from './FilterBtns';
 import { TitleContext } from '../../overview/TitleContext';
@@ -82,7 +81,6 @@ class Experiment extends React.Component<{}, ExpListState> {
         } = this.state;
         return (
             <Stack className='nni' style={{ minHeight: window.innerHeight }}>
-                <Hearder />
                 {errorMessage !== undefined ? (
                     <div className='warning'>
                         <MessageInfo info={errorMessage} typeInfo='error' />

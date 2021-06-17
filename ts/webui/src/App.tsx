@@ -3,6 +3,7 @@ import { Stack } from '@fluentui/react';
 import { COLUMN } from './static/const';
 import { EXPERIMENT, TRIALS } from './static/datamodel';
 import { isManagerExperimentPage } from './static/function';
+import Header from './components/nav/Header';
 import NavCon from './components/nav/NavCon';
 import MessageInfo from './components/modals/MessageInfo';
 import { SlideNavBtns } from './components/slideNav/SlideNavBtns';
@@ -176,7 +177,7 @@ class App extends React.Component<{}, AppState> {
 
         return (
             <React.Fragment>
-                {isManagerExperimentPage() ? null : (
+                {isManagerExperimentPage() ? <Header /> : (
                     <Stack className='nni' style={{ minHeight: window.innerHeight }}>
                         <div className='header'>
                             <div className='headerCon'>

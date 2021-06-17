@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import { Stack, StackItem, SearchBox, DefaultButton, DetailsList, IColumn, Selection } from '@fluentui/react';
-import Hearder from '../../nav/Header';
+import { Stack, SearchBox, DefaultButton, DetailsList, IColumn, Selection, PrimaryButton } from '@fluentui/react';
 import { TitleContext } from '../../overview/TitleContext';
 import { Title } from '../../overview/Title';
 import NewProjectModal from './NewProjectModal';
-import { convertDuration } from '../../../static/function';
+import { expformatTimestamp } from '../../../static/function';
 // fack data
-import { data } from './project';
+// import { data } from './project';
+import '../../../static/style/experiment/experiment.scss';
+import '../../../static/style/experiment/project.scss';
+
+interface Project {
+    projectId: number;
+    projectName: string;
+    labels: string[];
+    experiments: string[];
+    description: string;
+    createTime: number;
+}
 
 function ProjectIndex(): any {
 
-    const [tableSource, setTableSource] = useState(data);
+    // const [tableSource, setTableSource] = useState(data); // 测试有数据的project
+    const [tableSource, setTableSource] = useState([] as Project[]); // 测试 null project
+    console.info(tableSource);
     const [visible, setVisible] = useState(false);
     const [deleteProjectIds, setdeleteProjectIds] = useState([] as number[]); // 假设 project id 是 number 类型
 
@@ -19,18 +31,27 @@ function ProjectIndex(): any {
             name: 'Name',
             key: 'projectName',
             fieldName: 'projectName', // required!
-            minWidth: 60,
-            maxWidth: 80,
+            minWidth: 240,
+            maxWidth: 300,
             isResizable: true,
             data: 'string',
-            onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.projectName}</div>
+            onRender: (item: any): React.ReactNode => 
+            <div className='ellipsis idCopy'>
+                <a
+                    href='project/details'
+                    className='link toAnotherExp idColor'
+                    rel='noopener noreferrer'
+                >
+                    {item.projectName}
+                </a>
+            </div>
         },
         {
             name: 'Experiments',
             key: 'experiments',
             fieldName: 'experiments',
-            minWidth: 90,
-            maxWidth: 100,
+            minWidth: 230,
+            maxWidth: 300,
             isResizable: true,
             data: 'number',
             onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.experiments.length}</div>
@@ -39,8 +60,8 @@ function ProjectIndex(): any {
             name: 'Description',
             key: 'description',
             fieldName: 'description',
-            minWidth: 90,
-            maxWidth: 100,
+            minWidth: 350,
+            maxWidth: 400,
             isResizable: true,
             data: 'string',
             onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.description}</div>
@@ -49,13 +70,13 @@ function ProjectIndex(): any {
             name: 'CreatedTime',
             key: 'createTime',
             fieldName: 'createTime',
-            minWidth: 70,
-            maxWidth: 120,
+            minWidth: 160,
+            maxWidth: 270,
             isResizable: true,
             data: 'number',
             onRender: (item: any): React.ReactNode => (
                 <div className='durationsty succeed-padding'>
-                    <div>{convertDuration(item.createTime)}</div>
+                    <div>{expformatTimestamp(item.createTime)}</div>
                 </div>
             )
         }
@@ -65,6 +86,7 @@ function ProjectIndex(): any {
         let result = JSON.parse(JSON.stringify(tableSource));
 
         if (deleteProjectIds !== undefined ) {
+            console.info(deleteProjectIds);
             deleteProjectIds.forEach(item => {
                 result = tableSource.filter(ele => ele.projectId.toString() !== item.toString());
             });
@@ -78,16 +100,16 @@ function ProjectIndex(): any {
         setVisible(true);
     }
 
+    // 在 project 列表里做选择
     const selection = new Selection({
-        onSelectionChanged: () => setdeleteProjectIds(selection.getSelection().map(s => (s as any).project_id)),
+        onSelectionChanged: (): void => setdeleteProjectIds(selection.getSelection().map(s => (s as any).projectId)),
     });
 
     return (
         <Stack className='nni' style={{ minHeight: window.innerHeight }}>
-                <Hearder />
                 <Stack className='contentBox expBackground'>
                     {/* 56px: navBarHeight; 48: marginTop & Bottom */}
-                    <Stack className='content' styles={{ root: { minHeight: window.innerHeight - 104 } }}>
+                    <Stack className='content add' styles={{ root: { minHeight: window.innerHeight - 104 } }}>
                         <Stack className='experimentList'>
                             <TitleContext.Provider value={{ text: 'All project', icon: 'CustomList' }}>
                                 <Title />
@@ -102,26 +124,23 @@ function ProjectIndex(): any {
                                         // onChange={this.searchNameAndId.bind(this)}
                                     />
                                 </div>
-                                <Stack horizontalAlign="space-between">
-                                    <StackItem grow={50}>
-                                        <DefaultButton
-                                            onClick={newProject}
-                                            text='New project'
-                                        />
-                                    </StackItem>
-                                    <StackItem grow={50}>
-                                        <DefaultButton
-                                            onClick={deleteProject}
-                                            text='Delete'
-                                        />
-                                    </StackItem>
+                                <Stack horizontal className='position'>
+                                    <PrimaryButton
+                                        onClick={newProject}
+                                        text='New project'
+                                    />
+                                    <DefaultButton
+                                        onClick={deleteProject}
+                                        text='Delete'
+                                        className='deleteProject'
+                                    />
                                 </Stack>
                                 {/* project list */}
                                 <Stack>
                                 {
-                                    data.length === 0
+                                    tableSource.length === 0
                                     ?
-                                    <div>No projects yet.</div>
+                                    <div className='noProject'>No projects yet.</div>
                                     :
                                     <DetailsList
                                         columns={columns}
@@ -129,8 +148,7 @@ function ProjectIndex(): any {
                                         setKey='set'
                                         compact={true}
                                         selection={selection}
-                                        selectionPreservedOnEmptyClick={false} // 设成false是不是只能点CheckBox才能选中？
-                                        selectionMode={0} // close selector function
+                                        // selectionPreservedOnEmptyClick={false} // 设成false是不是只能点CheckBox才能选中？
                                         className='succTable'
                                     />
                                 }
@@ -140,7 +158,7 @@ function ProjectIndex(): any {
                     </Stack>
                 </Stack>
                 {/* new project modal */}
-                <NewProjectModal visible={visible} updateTableSource={setTableSource}/>
+                <NewProjectModal visible={visible} tableSource={tableSource} updateTableSource={setTableSource} closeModel={(): void => setVisible(false)}/>
             </Stack>
     );
 }

@@ -5,16 +5,30 @@ import { MANAGER_IP } from './const';
 import { EXPERIMENT } from './datamodel';
 import { MetricDataRecord, FinalType, TableObj, Tensorboard } from './interface';
 
+// 
+const router = ['/experiment', '/project', '/project/details'];
+
 function getPrefix(): string | undefined {
     const pathName = window.location.pathname;
     let newPathName = pathName;
-    const pathArr: string[] = ['/oview', '/detail', '/experiment', '/project'];
+    const pathArr: string[] = ['/oview', '/detail', ...router];
     pathArr.forEach(item => {
         if (pathName.endsWith(item)) {
             newPathName = pathName.replace(item, '');
         }
     });
     return newPathName === '' || newPathName === '/' ? undefined : newPathName;
+}
+
+function isManagerExperimentPage(): boolean {
+    const pathName = location.pathname;
+    let flag = false;
+    router.forEach(item => {
+        if (pathName.endsWith(item)) {
+            flag = true;
+        }
+    });
+    return flag;
 }
 
 async function requestAxios(url: string): Promise<any> {
@@ -282,11 +296,6 @@ function formatComplexTypeValue(value: any): string | number {
     } else {
         return value.toString();
     }
-}
-
-function isManagerExperimentPage(): boolean {
-    const path = location.pathname;
-    return path.endsWith('/experiment') || path.endsWith('/project') ? true : false;
 }
 
 function caclMonacoEditorHeight(height): number {

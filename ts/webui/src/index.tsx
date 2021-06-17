@@ -7,6 +7,7 @@ const Overview = lazy(() => import('./components/Overview'));
 const TrialsDetail = lazy(() => import('./components/TrialsDetail'));
 const Experiment = lazy(() => import('./components/managerment/managementExp/ExperimentManager'));
 const Project = lazy(() => import('./components/managerment/project/ProjectIndex'));
+const ProjectDetails = lazy(() => import('./components/managerment/project/ProjectDetails'));
 import './index.css';
 import './static/style/loading.scss';
 import * as serviceWorker from './serviceWorker';
@@ -29,8 +30,11 @@ ReactDOM.render(
                     <Route path='/detail' component={TrialsDetail} />
                 </App>
             </Switch>
+            {/* /experiment /project nav bar */}
             <Route path='/experiment' component={Experiment} exact />
-            <Route path='/project' component={Project} exact/>
+            <Route path='/project' component={Project} exact />
+            <Route path='/project/details' component={ProjectDetails} exact/>
+
         </Suspense>
     </Router>,
 
