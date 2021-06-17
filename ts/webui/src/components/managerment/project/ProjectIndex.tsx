@@ -40,6 +40,7 @@ function ProjectIndex(): any {
                 <a
                     href='project/details'
                     className='link toAnotherExp idColor'
+                    target='_blank'
                     rel='noopener noreferrer'
                 >
                     {item.projectName}
