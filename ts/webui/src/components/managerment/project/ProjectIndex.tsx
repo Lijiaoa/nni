@@ -83,14 +83,14 @@ function ProjectIndex(): any {
         }
     ];
 
+    function removeFromArray(original, remove): any {
+        return original.filter(value => !remove.includes(value.projectId));
+    }
+
     function deleteProject(): void {
         let result = JSON.parse(JSON.stringify(tableSource));
-
         if (deleteProjectIds !== undefined ) {
-            console.info(deleteProjectIds);
-            deleteProjectIds.forEach(item => {
-                result = tableSource.filter(ele => ele.projectId.toString() !== item.toString());
-            });
+            result = removeFromArray(tableSource, deleteProjectIds);
         }
 
         setTableSource(result);

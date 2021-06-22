@@ -19,7 +19,6 @@ function NewProjectModal(props): JSX.Element {
     function choseTrials(val: string[]): void{
         setChooseTrials(val);
     }
-    console.info(setExpListString);
     const onChangeFirstTextFieldValue = useCallback(
         (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
             setFirstTextFieldValue(newValue || '');
@@ -36,11 +35,9 @@ function NewProjectModal(props): JSX.Element {
     // 点 save btn 之后，吧数据加进页面
     function newProjectFunction(): void {
         //  拿到name,description,experimentlist
-        console.info(firstTextFieldValue);
-        console.info(description);
-        console.info(chooseTrials.join(','));
+        const id = Math.random().toString(32).substr(2);
         tableSource.push({
-            projectId: 4,
+            projectId: id,
             projectName: firstTextFieldValue,
             experiments: chooseTrials,
             description: description,

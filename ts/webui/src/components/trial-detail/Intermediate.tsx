@@ -137,6 +137,7 @@ class Intermediate extends React.Component<IntermediateProps, IntermediateState>
             this.setState({
                 interSource: option
             });
+            console.info(option);
         } else {
             const nullData = {
                 grid: {

@@ -22,6 +22,7 @@ const Cancel = <Icon iconName='Cancel' />;
 const ReplyAll = { iconName: 'ReplyAll' };
 const RevToggleKey = { iconName: 'RevToggleKey' };
 const ChevronRightMed = <Icon iconName='ChevronRightMed' />;
+const Settings = <Icon iconName='Settings' />;
 
 export {
     infoIcon,
@@ -43,5 +44,6 @@ export {
     Cancel,
     ReplyAll,
     RevToggleKey,
-    ChevronRightMed
+    ChevronRightMed,
+    Settings
 };
