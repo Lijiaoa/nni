@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { IColumn, DetailsList, Selection } from '@fluentui/react';
 
 function ExperimentsList(props): any{
 
-    const { source, changeChooseTrials, setExpListString } = props;
-
+    const { source, changeChooseTrials, chooseTrials } = props;
+    const [trials, setTrials] = useState(chooseTrials);
+    console.info(trials);
     const columns: IColumn[] = [
         {
             name: 'Name',
@@ -46,8 +47,8 @@ function ExperimentsList(props): any{
     const selection = new Selection({
         onSelectionChanged: (): void => {
             const idarr = selection.getSelection().map(s => (s as any).id);
+            setTrials(idarr);
             changeChooseTrials(idarr);
-            setExpListString(idarr.join(', '));
         }
     });
 
@@ -67,7 +68,8 @@ function ExperimentsList(props): any{
 ExperimentsList.propTypes = {
     source: PropTypes.array,
     changeChooseTrials: PropTypes.func,
-    setExpListString: PropTypes.func
+    setExpListString: PropTypes.func,
+    chooseTrials: PropTypes.array
 };
 
 export default ExperimentsList;

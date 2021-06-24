@@ -24,6 +24,16 @@ const exp = [
         name: 'Example mnist4',
         id: 'IOUPPP',
         label: ['NAS']
+    },
+    {
+        name: 'Example mnist5',
+        id: 'MNINs5',
+        label: ['xxx']
+    },
+    {
+        name: 'Example mnist6',
+        id: 'MNINs6',
+        label: ['xxx']
     }
 ];
 

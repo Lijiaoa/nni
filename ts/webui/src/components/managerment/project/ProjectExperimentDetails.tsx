@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import { Stack, SearchBox, IColumn, DetailsList, Selection, DefaultButton, PrimaryButton } from '@fluentui/react';
+import AddExperiment from './AddExperiment';
+import { exp } from './experiment';
 import '../../../static/style/experiment/experiment.scss';
 import '../../../static/style/experiment/project.scss';
 
@@ -18,6 +20,7 @@ import '../../../static/style/experiment/project.scss';
 function ProjectExperimentDetails(_props): any{
 
     const [selectedIds, setSelectedIds] = useState([] as string[]);
+    const [visible, setVisible] = useState(false);
     console.info(selectedIds);
     const item = [
         {
@@ -72,6 +75,13 @@ function ProjectExperimentDetails(_props): any{
         }
     ];
 
+    const [detailsItem, setDetailsItem] = useState(item);
+    const changeitem = useCallback(
+        (value: any) => {
+            setDetailsItem(value);
+        },
+        [],
+    );
     const columns: IColumn[] = [
         {
             name: 'Name',
@@ -171,8 +181,25 @@ function ProjectExperimentDetails(_props): any{
         }
     });
 
+    function AddExperimentToProject (): void{
+        setVisible(true);
+    }
+
+    function removeFromArray(original, remove): any {
+        return original.filter(value => !remove.includes(value.id));
+    }
+
+    function deleteExperiment(): void{
+        let result = JSON.parse(JSON.stringify(detailsItem));
+        if (selectedIds !== undefined ) {
+            result = removeFromArray(detailsItem, selectedIds);
+        }
+
+        changeitem(result);
+    }
+
     return(
-        <Stack gap={20}>
+        <React.Fragment>
             <SearchBox
                 styles={{root: {width: 330}}}
                 placeholder='Search the experiment by name or ID'
@@ -182,30 +209,37 @@ function ProjectExperimentDetails(_props): any{
             />
             <Stack horizontal className='position'>
                 <PrimaryButton
-                    // onClick={newProject}
+                    onClick={AddExperimentToProject}
                     text='Add'
                 />
                 <DefaultButton
-                    // onClick={deleteProject}
+                    onClick={deleteExperiment}
                     text='Remove'
                     className='remove'
-                />
+                    />
                 <DefaultButton
-                    // onClick={deleteProject}
+                    onClick={deleteExperiment}
                     text='Delete'
                     className='deleteProject'
                 />
             </Stack>
             <DetailsList
                 columns={columns}
-                items={item}
+                items={detailsItem}
                 setKey='set'
                 compact={true}
                 selection={selection}
-                selectionPreservedOnEmptyClick={false} // 设成false是不是只能点CheckBox才能选中？
+                selectionPreservedOnEmptyClick={true}
                 className='succTable'
             />
-        </Stack>
+            {/* add experiment into this project model */}
+            <AddExperiment
+                visible={visible}
+                closeModel={(): void => setVisible(false)}
+                tableSource={exp}
+                changeDetailTableList={changeitem}
+            />
+        </React.Fragment>
     );
 }
 

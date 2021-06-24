@@ -247,11 +247,11 @@ class App extends React.Component<{}, AppState> {
         }
 
         // experiment status and /trial-jobs api's status could decide website update
-        if (['DONE', 'ERROR', 'STOPPED', 'VIEWED'].includes(EXPERIMENT.status) || TRIALS.jobListError()) {
-            // experiment finished, refresh once more to ensure consistency
-            this.setState(() => ({ interval: 0, isUpdate: false }));
-            return;
-        }
+        // if (['DONE', 'ERROR', 'STOPPED', 'VIEWED'].includes(EXPERIMENT.status) || TRIALS.jobListError()) {
+        //     // experiment finished, refresh once more to ensure consistency
+        //     this.setState(() => ({ interval: 0, isUpdate: false }));
+        //     return;
+        // }
 
         this.timerId = window.setTimeout(this.refresh, this.state.interval * 1000);
     };

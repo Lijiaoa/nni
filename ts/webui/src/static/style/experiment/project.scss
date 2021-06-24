@@ -46,9 +46,23 @@ $boxGapPadding: 10px;
         margin-right: $boxGapPadding;
 
         .basic{
-            p{
+            div{
                 font-size: 18px;
                 font-weight: 500;
+            }
+            p{
+                font-size: 16px;
+                color: #8f8f8f;
+            }
+            i{
+                font-size: 18px;
+            }
+        }
+
+        .special{
+            div{
+                font-size: 16px;
+                font-weight: 400;
             }
         }
     }
@@ -60,14 +74,9 @@ $boxGapPadding: 10px;
 
     &-list {
         grid-column: 1 / 9;
-        grid-row: 4 / 7;
+        grid-row: 4 / 8;
+        max-height: 496px;
         margin: $boxGapPadding 0 24px 0 !important;
-
-        h1{
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
     }
 }
 
@@ -76,4 +85,25 @@ $boxGapPadding: 10px;
         position: absolute;
         right: 90px;
     }
+}
+
+.addExpCount{
+    h2{
+        font-size: 18px;
+    }
+    span{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-left: 6px;
+        border-radius: 50%;
+        text-align: center;
+        background: rgb(0, 120, 212);
+        color: #fff;
+    }
+}
+
+h1{
+    font-size: 20px;
+    font-weight: 500;
 }

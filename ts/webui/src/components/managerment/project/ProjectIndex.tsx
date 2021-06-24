@@ -65,7 +65,7 @@ function ProjectIndex(): any {
             maxWidth: 400,
             isResizable: true,
             data: 'string',
-            onRender: (item: any): React.ReactNode => <div className='succeed-padding'>{item.description}</div>
+            onRender: (item: any): React.ReactNode => <div className='succeed-padding ellipsis'>{item.description}</div>
         },
         {
             name: 'CreatedTime',
@@ -159,7 +159,13 @@ function ProjectIndex(): any {
                     </Stack>
                 </Stack>
                 {/* new project modal */}
-                <NewProjectModal visible={visible} tableSource={tableSource} updateTableSource={setTableSource} closeModel={(): void => setVisible(false)}/>
+                <NewProjectModal
+                    title='New project'
+                    visible={visible}
+                    tableSource={tableSource}
+                    updateTableSource={setTableSource}
+                    closeModel={(): void => setVisible(false)}
+                />
             </Stack>
     );
 }
