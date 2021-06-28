@@ -118,7 +118,7 @@ function AddExperiment(props): any {
                 <Stack tokens={projectTokens}>
                     <div className='addExpCount'>
                         Experiments
-                        <span>3</span>
+                        <span>5</span>
                     </div>
                     <Stack horizontal className='position'>
                         <SearchBox
